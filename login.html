@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="Rahil Karkar, Ansh Pathapadu, Nirusma Dahal">
+  <!-- Deployed URL: http://www.cs.virginia.edu/uzu3gv/jukeboxd/ -->
+  <title>JukeBoxed — Sign In</title>
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body class="bg">
+  <header class="site-header">
+    <a class="logo" href="index.html">
+      <span class="logo-ice">Juke</span><span class="logo-core">Boxed</span>
+    </a>
+    <nav class="main-nav">
+      <a class="active" href="login.html">Sign In</a>
+      <a href="#">Create Account</a>
+      <a href="#">Songs</a>
+      <a href="#">Lists</a>
+    </nav>
+    <form class="search">
+      <input type="search" placeholder="Search" aria-label="Search music" />
+      <button type="submit" aria-label="Submit search">🔍</button>
+    </form>
+  </header>
+
+  <main class="signin-content">
+    <div class="signin-modal">
+      <form class="signin-form" action="profile.html" method="get">
+        <input 
+          type="text" 
+          name="username"
+          placeholder="enter username" 
+          class="signin-input"
+          required
+          autocomplete="username">
+        
+        <input 
+          type="password" 
+          name="password"
+          placeholder="enter password" 
+          class="signin-input"
+          required
+          autocomplete="current-password">
+        
+        <button type="submit" class="login-btn">LOG IN</button>
+        
+        <p class="signup-link">
+          Don't have an account? <a href="#">Create one</a>
+        </p>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,371 @@
+/*
+ * Reviews Page Styles
+ * Authors: Rahil Karkar, Ansh Pathapadu, Nirusma Dahal
+ * Course: CS 4640 Sprint 2
+ */
+
+/* CSS RULE 1: CSS Variables */
+:root {
+  --bg: #14252C;
+  --text: #E8F0F2;
+  --subtle: #BFD1D6;
+  --pill: #5b7b8d;
+  --pill-active: #94AFC0;
+  --card-bg: #16292d;
+  --btn-bg: #4a6a72;
+  --btn-hover: #5a7a82;
+  --shadow: 0 10px 24px rgba(0,0,0,.25);
+  --star-color: #ffd700;
+}
+
+/* CSS RULE 2: Body Base Styles */
+body.bg {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* CSS RULE 3: Header Flexbox Layout */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+/* CSS RULE 4: Logo Gradient Effect */
+.logo-ice {
+  background: linear-gradient(#dff8ff, #9ed6ea 70%, #78bdd4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.logo-core { 
+  color: #cfe7f2; 
+}
+
+/* CSS RULE 5: Navigation Links with Hover States */
+.main-nav a {
+  color: var(--subtle);
+  margin: 0 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.main-nav a.active, 
+.main-nav a:hover { 
+  color: var(--text); 
+}
+
+/* CSS RULE 6: Search Form Styling */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.search input {
+  background: #2a3b43;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  color: var(--text);
+  min-width: 200px;
+}
+
+.search input::placeholder {
+  color: #7a8b93;
+}
+
+.search input:focus {
+  outline: 2px solid var(--subtle);
+  outline-offset: 2px;
+}
+
+.search button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  color: var(--text);
+}
+
+/* CSS RULE 7: Container and Profile Layout */
+.container {
+  width: min(1200px, 92vw);
+  margin: 40px auto;
+}
+
+.profile-top {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 140px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #8b5e5e;
+  box-shadow: var(--shadow);
+}
+
+.user-meta {
+  flex: 1;
+}
+
+.username {
+  font-size: 1.8rem;
+  margin: 0;
+  color: var(--text);
+}
+
+/* CSS RULE 8: Profile Pills Navigation with Active State */
+.profile-pills {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0 30px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: var(--pill);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.pill:hover {
+  transform: translateY(-2px);
+  background: #7a9aac;
+}
+
+.pill.active {
+  background: var(--pill-active);
+  color: #102028;
+}
+
+/* CSS RULE 9: Reviews Section with Sort Controls */
+.reviews-section {
+  margin-top: 30px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(219, 231, 236, 0.2);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-head h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-controls label {
+  font-size: 0.9rem;
+  color: var(--subtle);
+  font-weight: 600;
+}
+
+.sort-controls select {
+  background: var(--btn-bg);
+  color: var(--text);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-family: inherit;
+}
+
+.sort-controls select:hover {
+  background: var(--btn-hover);
+}
+
+.sort-controls select:focus {
+  outline: 2px solid var(--subtle);
+  outline-offset: 2px;
+}
+
+/* CSS RULE 10: Review Cards with Hover Transform */
+.review-card {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,.45);
+}
+
+.album-cover {
+  width: 150px;
+  min-width: 150px;
+  aspect-ratio: 1 / 1;
+  background: #33474f;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+
+.review-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-header h4 {
+  margin: 0 0 4px 0;
+  font-size: 1.25rem;
+  color: var(--text);
+}
+
+.artist-name {
+  color: var(--subtle);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.rating {
+  color: var(--star-color);
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+  margin: 4px 0;
+}
+
+.review-text {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  flex: 1;
+  margin: 0;
+}
+
+/* CSS RULE 11: Button Styles with Hover Effect */
+.btn.like {
+  align-self: flex-start;
+  background: var(--btn-bg);
+  color: var(--text);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  font-family: inherit;
+}
+
+.btn.like:hover {
+  background: var(--btn-hover);
+  transform: scale(1.05);
+}
+
+.btn.like:active {
+  transform: scale(0.98);
+}
+
+/* CSS RULE 12: Responsive Design for Multiple Screen Sizes */
+@media (max-width: 768px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .search {
+    order: 3;
+    width: 100%;
+  }
+  
+  .search input {
+    width: 100%;
+  }
+  
+  .profile-top {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .review-card {
+    flex-direction: column;
+  }
+  
+  .album-cover {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .profile-pills {
+    justify-content: center;
+  }
+  
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding: 15px 20px;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .main-nav a {
+    font-size: 0.75rem;
+    margin: 0 4px;
+    padding: 4px 8px;
+  }
+  
+  .username {
+    font-size: 1.5rem;
+  }
+  
+  .section-head h3 {
+    font-size: 1.2rem;
+  }
+  
+  .review-header h4 {
+    font-size: 1.1rem;
+  }
+  
+  .review-text {
+    font-size: 0.9rem;
+  }
+}

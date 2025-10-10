@@ -1,0 +1,170 @@
+/*
+ * Landing Page Styles
+ * Authors: Rahil Karkar, Ansh Pathapadu, Nirusma Dahal
+ * Course: CS 4640 Sprint 2
+ */
+
+/* CSS RULE 1: CSS Variables */
+:root {
+    --bg: #14252C;
+    --text: #E8F0F2;
+    --subtle: #BFD1D6;
+    --cta: #D9D9D9;
+    --accent: #CDE7F0;
+    --shadow: 0 10px 24px rgba(0,0,0,.25);
+  }
+  
+  /* CSS RULE 2: Body Base Styles */
+  body.bg {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* CSS RULE 3: Header Flexbox Layout */
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+  }
+  
+  .logo {
+    font-weight: 800;
+    font-size: 1.5rem;
+    text-decoration: none;
+  }
+
+  /* CSS RULE 4: Logo Gradient Effect */
+  .logo-ice {
+    background: linear-gradient(#dff8ff, #9ed6ea 70%, #78bdd4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .logo-core {
+    color: #cfe7f2;
+  }
+
+  /* CSS RULE 5: Navigation Links with Hover States */
+  .main-nav a {
+    color: var(--subtle);
+    margin: 0 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .main-nav a:hover {
+    color: var(--text);
+  }
+
+  /* CSS RULE 6: Search Form Styling */
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .search input {
+    background: #2a3b43;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 10px;
+    color: var(--text);
+    min-width: 200px;
+  }
+
+  .search input::placeholder {
+    color: #7a8b93;
+  }
+
+  .search input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .search button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px;
+    color: var(--text);
+  }
+
+  /* CSS RULE 7: Hero Section Layout with Flexbox */
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 80px 40px;
+  }
+
+  /* CSS RULE 8: Album Grid Layout */
+  .hero-albums {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  /* CSS RULE 9: Album Card Styling */
+  .album {
+    width: 150px;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    background: #33474f;
+    box-shadow: var(--shadow);
+  }
+  
+  /* CSS RULE 10: Hero Copy Section */
+  .hero-copy {
+    max-width: 400px;
+  }
+
+  .hero-copy h1 {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+  }
+  
+  .hero-copy p {
+    color: var(--subtle);
+    margin-bottom: 20px;
+  }
+
+  .accent {
+    color: var(--accent);
+  }
+
+  /* CSS RULE 11: CTA Button with Hover Effect */
+  .cta {
+    display: inline-block;
+    background: var(--cta);
+    color: #111;
+    font-weight: 800;
+    padding: 16px 36px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(0,0,0,.35);
+  }
+
+  .cta:active {
+    transform: translateY(0);
+  }
+
+  /* CSS RULE 12: Responsive Design */
+  @media (max-width: 768px) {
+    .hero { flex-direction: column; text-align: center; }
+  }
+  

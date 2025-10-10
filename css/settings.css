@@ -1,0 +1,301 @@
+/*
+ * Account Settings Page Styles
+ * Authors: Rahil Karkar, Ansh Pathapadu, Nirusma Dahal
+ * Course: CS 4640 Sprint 2
+ */
+
+/* CSS RULE 1: CSS Variables */
+:root {
+  --bg: #14252C;
+  --text: #E8F0F2;
+  --subtle: #BFD1D6;
+  --input-bg: #5a6f7a;
+  --btn-bg: #1E5D1B;
+  --btn-hover: #245031;
+  --tab-border: #4a5c65;
+  --shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
+/* CSS RULE 2: Body Base Styles */
+body.bg {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+/* CSS RULE 3: Header Flexbox Layout */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+/* CSS RULE 4: Logo Gradient Effect */
+.logo-ice {
+  background: linear-gradient(#dff8ff, #9ed6ea 70%, #78bdd4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.logo-core { 
+  color: #cfe7f2; 
+}
+
+/* CSS RULE 5: Navigation Links with Hover States */
+.main-nav a {
+  color: var(--subtle);
+  margin: 0 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.main-nav a.active, 
+.main-nav a:hover { 
+  color: var(--text); 
+}
+
+/* CSS RULE 6: Search Form Styling */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.search input {
+  background: #2a3b43;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  color: var(--text);
+  min-width: 200px;
+}
+
+.search input::placeholder {
+  color: #7a8b93;
+}
+
+.search input:focus {
+  outline: 2px solid var(--subtle);
+  outline-offset: 2px;
+}
+
+.search button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  color: var(--text);
+}
+
+/* CSS RULE 7: Container Layout */
+.container {
+  width: min(1200px, 92vw);
+  margin: 40px auto;
+}
+
+.settings-header {
+  margin-bottom: 30px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* CSS RULE 8: Tabs with Active State */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--tab-border);
+  margin-bottom: 40px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1rem;
+  padding: 15px 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-bottom: 3px solid transparent;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.tab.active {
+  border-bottom: 3px solid var(--text);
+}
+
+.tab:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* CSS RULE 9: Settings Form Layout */
+.settings-content {
+  max-width: 700px;
+}
+
+.settings-form {
+  width: 100%;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 30px;
+  color: var(--text);
+}
+
+/* CSS RULE 10: Form Groups and Inputs */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group.half {
+  flex: 1;
+}
+
+.input-field {
+  width: 100%;
+  background-color: var(--input-bg);
+  border: none;
+  padding: 12px 15px;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+  transition: background-color 0.3s ease;
+}
+
+.input-field:focus {
+  background-color: #8a9faa;
+  outline: 2px solid var(--subtle);
+  outline-offset: 2px;
+}
+
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+/* CSS RULE 11: Submit Button with Hover Effect */
+.submit-btn {
+  background-color: var(--btn-bg);
+  color: var(--text);
+  border: none;
+  padding: 15px 60px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  float: right;
+  font-family: inherit;
+}
+
+.submit-btn:hover {
+  background-color: var(--btn-hover);
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+/* CSS RULE 12: Responsive Design */
+@media (max-width: 768px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .search {
+    order: 3;
+    width: 100%;
+  }
+  
+  .search input {
+    width: 100%;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+  
+  .tabs {
+    overflow-x: auto;
+  }
+  
+  .tab {
+    white-space: nowrap;
+  }
+  
+  .submit-btn {
+    float: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding: 15px 20px;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .main-nav a {
+    font-size: 0.75rem;
+    margin: 0 4px;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .tab {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .form-title {
+    font-size: 1.3rem;
+  }
+}

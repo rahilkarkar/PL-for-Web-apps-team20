@@ -1,0 +1,242 @@
+/*
+ * Login Page Styles
+ * Authors: Rahil Karkar, Ansh Pathapadu, Nirusma Dahal
+ * Course: CS 4640 Sprint 2
+ */
+
+/* CSS RULE 1: CSS Variables */
+:root {
+  --bg: #14252C;
+  --text: #E8F0F2;
+  --subtle: #BFD1D6;
+  --cta: #D9D9D9;
+  --modal-bg: rgba(255, 255, 255, 0.95);
+  --input-border: #2c3e4a;
+  --accent: #7ab8d9;
+  --shadow: 0 10px 40px rgba(0,0,0,.3);
+}
+
+/* CSS RULE 2: Body Base Styles */
+body.bg {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+/* CSS RULE 3: Header Flexbox Layout */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+/* CSS RULE 4: Logo Gradient Effect */
+.logo-ice {
+  background: linear-gradient(#dff8ff, #9ed6ea 70%, #78bdd4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.logo-core { 
+  color: #cfe7f2; 
+}
+
+/* CSS RULE 5: Navigation Links with Hover States */
+.main-nav a {
+  color: var(--subtle);
+  margin: 0 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.main-nav a.active, 
+.main-nav a:hover { 
+  color: var(--text); 
+}
+
+/* CSS RULE 6: Search Form Styling */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.search input {
+  background: #2a3b43;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  color: var(--text);
+  min-width: 200px;
+}
+
+.search input::placeholder {
+  color: #7a8b93;
+}
+
+.search input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.search button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  color: var(--text);
+}
+
+/* CSS RULE 7: Sign In Content Centering */
+.signin-content {
+  position: relative;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* CSS RULE 8: Modal with Box Shadow */
+.signin-modal {
+  position: relative;
+  z-index: 10;
+  background: var(--modal-bg);
+  border-radius: 30px;
+  padding: 60px 80px;
+  box-shadow: var(--shadow);
+  max-width: 500px;
+  width: 90%;
+}
+
+/* CSS RULE 9: Form Layout */
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* CSS RULE 10: Input Fields with Focus States */
+.signin-input {
+  background: none;
+  border: none;
+  border-bottom: 2px solid var(--input-border);
+  padding: 15px 5px;
+  font-size: 16px;
+  color: var(--input-border);
+  outline: none;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+}
+
+.signin-input:focus {
+  border-bottom-color: var(--accent);
+}
+
+.signin-input::placeholder {
+  color: #888;
+}
+
+/* CSS RULE 11: Button with Hover Effect */
+.login-btn {
+  background-color: var(--cta);
+  color: #2c3e4a;
+  border: none;
+  padding: 15px;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-family: inherit;
+}
+
+.login-btn:hover {
+  background-color: #c4c9cb;
+  transform: translateY(-2px);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+/* Signup Link Styling */
+.signup-link {
+  text-align: center;
+  color: var(--input-border);
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.signup-link a {
+  color: var(--input-border);
+  font-weight: 600;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.signup-link a:hover {
+  color: var(--accent);
+}
+
+/* CSS RULE 12: Responsive Design */
+@media (max-width: 768px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .search {
+    order: 3;
+    width: 100%;
+  }
+  
+  .search input {
+    width: 100%;
+  }
+  
+  .signin-modal {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding: 15px 20px;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .main-nav a {
+    font-size: 0.75rem;
+    margin: 0 4px;
+  }
+  
+  .signin-modal {
+    padding: 30px 20px;
+  }
+  
+  .signin-input {
+    font-size: 14px;
+  }
+  
+  .login-btn {
+    font-size: 16px;
+  }
+}
