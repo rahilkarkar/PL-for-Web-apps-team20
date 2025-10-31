@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JukeBoxed — Discover & Review Music</title>
-  <link rel="stylesheet" href="public/css/index.css" />
+  <link rel="stylesheet" href="<?= $BASE_PATH ?>/public/css/index.css" />
 </head>
 <body class="bg">
   <header class="site-header">

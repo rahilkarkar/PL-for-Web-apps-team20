@@ -1,0 +1,26 @@
+# JukeBoxed .gitignore
+# ---------------------
+
+# SECURITY: Server configuration with passwords
+config-server.php
+
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# PHP temporary files
+*.log
+
+setup-database.php
+debug-simple.php
+config.php

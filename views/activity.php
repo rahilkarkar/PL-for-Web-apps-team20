@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JukeBoxed — Activity</title>
-  <link rel="stylesheet" href="public/css/activity.css" />
+  <link rel="stylesheet" href="<?= $BASE_PATH ?>/public/css/activity.css" />
 </head>
 <body class="bg">
   <header class="site-header">

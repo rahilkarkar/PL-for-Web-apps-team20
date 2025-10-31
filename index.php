@@ -2,32 +2,59 @@
 session_start();
 
 /**
- * JukeBoxed App - Front Controller
- * --------------------------------
- * Routes user requests via $_GET['action']
- * Handles authentication, registration, and sessions
- * Connects to PostgreSQL database (jukeboxed)
+ * Team Members: Rahil Karkar, Ansh Pathapadu, Nirusma Dahal
+ * Deployed URL: https://cs4640.cs.virginia.edu/uzu3gv/jukeboxd/
  */
 
 // ---------------- DATABASE CONNECTION ----------------
-$host = 'localhost';
-$dbname = 'jukeboxed';
-$user = 'anshpathapadu';  // ✅ Replace with your actual PostgreSQL username
-$pass = '';                // leave blank if you don’t use a password (most macOS setups)
-$dsn = "pgsql:host=$host;dbname=$dbname;options='--client_encoding=UTF8'";
+// Auto-detect environment and load appropriate config
+$isServer = (
+    isset($_SERVER['HTTP_HOST']) &&
+    strpos($_SERVER['HTTP_HOST'], 'cs4640.cs.virginia.edu') !== false
+);
 
-try {
-    $pdo = new PDO($dsn, $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+if ($isServer) {
+    // Running on CS4640 server - use server config
+    require_once 'config-server.php';
+} else {
+    // Running locally - use local config
+    require_once 'config-local.php';
 }
 
-// ---------------- LOAD USER MODEL ----------------
+// $pdo is now available from the config file
+
+// ---------------- BASE PATH HELPER ----------------
+// Helper function to generate correct URLs for assets and links
+function getBasePath() {
+    // Get the directory of the current script
+    $scriptName = $_SERVER['SCRIPT_NAME']; // e.g., /~abc3de/project/index.php
+    $basePath = dirname($scriptName); // e.g., /~abc3de/project
+
+    // Handle Windows paths
+    $basePath = str_replace('\\', '/', $basePath);
+
+    // Remove trailing slash, but keep root as '/'
+    if ($basePath !== '/') {
+        $basePath = rtrim($basePath, '/');
+    }
+
+    return $basePath;
+}
+
+// Make base path available globally
+$BASE_PATH = getBasePath();
+
+// Debug: Uncomment to see what base path is being generated
+// echo "<!-- BASE_PATH: " . htmlspecialchars($BASE_PATH) . " -->\n";
+
+// ---------------- LOAD MODELS ----------------
 require_once 'models/UserModel.php';
+require_once 'models/ReviewModel.php';
+require_once 'models/SongModel.php';
+
 $userModel = new UserModel($pdo);
+$reviewModel = new ReviewModel($pdo);
+$songModel = new SongModel($pdo);
 
 // ---------------- ROUTING ----------------
 $action = $_GET['action'] ?? 'home';
@@ -68,6 +95,7 @@ switch ($action) {
             if (empty($errors)) {
                 $user = $userModel->getUserByEmail($email);
                 if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['email'] = $user['email'];
 
@@ -112,19 +140,27 @@ switch ($action) {
 
             // If valid, insert into database
             if (empty($errors)) {
-                $existing = $userModel->getUserByEmail($email);
-                if ($existing) {
-                    $errors[] = "Email already registered.";
-                } else {
-                    $hashed = password_hash($password, PASSWORD_DEFAULT);
-                    $userModel->addUser($username, $email, $hashed);
+                try {
+                    $existing = $userModel->getUserByEmail($email);
+                    if ($existing) {
+                        $errors[] = "Email already registered.";
+                    } else {
+                        $hashed = password_hash($password, PASSWORD_DEFAULT);
+                        $userModel->addUser($username, $email, $hashed);
 
-                    // Auto-login new user
-                    $_SESSION['username'] = $username;
-                    $_SESSION['email'] = $email;
+                        // Auto-login new user - fetch the created user to get ID
+                        $newUser = $userModel->getUserByEmail($email);
+                        $_SESSION['user_id'] = $newUser['id'];
+                        $_SESSION['username'] = $username;
+                        $_SESSION['email'] = $email;
 
-                    header('Location: index.php?action=profile');
-                    exit;
+                        header('Location: index.php?action=profile');
+                        exit;
+                    }
+                } catch (PDOException $e) {
+                    // Database error - likely tables don't exist
+                    $errors[] = "Database error: " . $e->getMessage();
+                    $errors[] = "Have you run migrations.sql on the server?";
                 }
             }
 
@@ -154,6 +190,99 @@ switch ($action) {
 
     case 'settings':
         include 'views/settings.php';
+        break;
+
+    // ---------- SONGS ----------
+    case 'songs':
+        // Get all songs or search results
+        $songs = $songModel->getAllSongs(100);
+        include 'views/songs.php';
+        break;
+
+    // ---------- SUBMIT REVIEW ----------
+    case 'submitReview':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+            $songId = intval($_POST['song_id'] ?? 0);
+            $rating = intval($_POST['rating'] ?? 0);
+            $reviewText = trim($_POST['review_text'] ?? '');
+            $errors = [];
+
+            // Server-side validation
+            if ($songId <= 0) {
+                $errors[] = "Invalid song selected.";
+            }
+            if ($rating < 1 || $rating > 5) {
+                $errors[] = "Rating must be between 1 and 5 stars.";
+            }
+            if (strlen($reviewText) < 3) {
+                $errors[] = "Review must be at least 3 characters long.";
+            }
+
+            // If valid, add review
+            if (empty($errors)) {
+                $success = $reviewModel->addReview($_SESSION['user_id'], $songId, $rating, $reviewText);
+                if ($success) {
+                    header('Location: index.php?action=reviews&success=1');
+                    exit;
+                } else {
+                    $errors[] = "You have already reviewed this song.";
+                }
+            }
+
+            // If errors, go back to reviews page with errors
+            $_SESSION['review_errors'] = $errors;
+            header('Location: index.php?action=reviews');
+            exit;
+        }
+        header('Location: index.php?action=reviews');
+        exit;
+
+    // ---------- DELETE REVIEW ----------
+    case 'deleteReview':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+            $reviewId = intval($_POST['review_id'] ?? 0);
+            if ($reviewId > 0) {
+                $reviewModel->deleteReview($reviewId, $_SESSION['user_id']);
+            }
+        }
+        header('Location: index.php?action=reviews');
+        exit;
+
+    // ---------- ADD TO LISTEN LIST ----------
+    case 'addToListenList':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+            $songId = intval($_POST['song_id'] ?? 0);
+            if ($songId > 0) {
+                $songModel->addToListenList($_SESSION['user_id'], $songId);
+            }
+        }
+        header('Location: ' . ($_POST['redirect'] ?? 'index.php?action=songs'));
+        exit;
+
+    // ---------- REMOVE FROM LISTEN LIST ----------
+    case 'removeFromListenList':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+            $songId = intval($_POST['song_id'] ?? 0);
+            if ($songId > 0) {
+                $songModel->removeFromListenList($_SESSION['user_id'], $songId);
+            }
+        }
+        header('Location: ' . ($_POST['redirect'] ?? 'index.php?action=listenList'));
+        exit;
+
+    // ---------- LISTEN LIST PAGE ----------
+    case 'listenList':
+        if (empty($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+        $listenList = $songModel->getListenList($_SESSION['user_id']);
+        include 'views/listen_list.php';
+        break;
+
+    // ---------- SEARCH DEMO (JSON API DEMONSTRATION) ----------
+    case 'searchDemo':
+        include 'views/search_demo.php';
         break;
 
     // ---------- DEFAULT ----------

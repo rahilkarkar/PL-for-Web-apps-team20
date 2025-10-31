@@ -4,13 +4,12 @@
  * -----------------------------
  * Database connection configuration for the JukeBoxed app.
  * 
- * Adjust the username and password below if your PostgreSQL role differs.
  */
 
 $host = 'localhost';
 $db   = 'jukeboxed';
-$user = 'anshpathapadu';   // ← your PostgreSQL username (check via SELECT current_user;)
-$pass = '';                 // ← leave blank if you don’t use a password
+$user = 'anshpathapadu';   
+$pass = '';                
 $charset = 'utf8';
 
 $dsn = "pgsql:host=$host;dbname=$db;options='--client_encoding=$charset'";
@@ -24,6 +23,6 @@ try {
 
 } catch (PDOException $e) {
     // Handle connection errors gracefully
-    die("❌ Database connection failed: " . $e->getMessage());
+    die(" Database connection failed: " . $e->getMessage());
 }
 ?>
