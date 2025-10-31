@@ -1,7 +1,7 @@
 -- JukeBoxed Database Schema
 -- Run this file to set up all necessary tables
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS jukeboxd_users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS songs (
 -- Reviews table
 CREATE TABLE IF NOT EXISTS reviews (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES jukeboxd_users(id) ON DELETE CASCADE,
     song_id INT NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     review_text TEXT,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 -- Listen List (Wishlist) table
 CREATE TABLE IF NOT EXISTS listen_list (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES jukeboxd_users(id) ON DELETE CASCADE,
     song_id INT NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, song_id)
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS listen_list (
 -- Followers table (for Part C - follow system)
 CREATE TABLE IF NOT EXISTS followers (
     id SERIAL PRIMARY KEY,
-    follower_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    following_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    follower_id INT NOT NULL REFERENCES jukeboxd_users(id) ON DELETE CASCADE,
+    following_id INT NOT NULL REFERENCES jukeboxd_users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(follower_id, following_id),
     CHECK (follower_id != following_id)

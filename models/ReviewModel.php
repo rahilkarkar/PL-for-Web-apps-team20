@@ -18,7 +18,7 @@ class ReviewModel {
         $stmt = $this->pdo->prepare("
             SELECT r.*, u.username, s.title as song_title, s.artist
             FROM reviews r
-            JOIN users u ON r.user_id = u.id
+            JOIN jukeboxd_users u ON r.user_id = u.id
             JOIN songs s ON r.song_id = s.id
             WHERE r.song_id = :song_id
             ORDER BY r.created_at DESC
@@ -55,7 +55,7 @@ class ReviewModel {
         $stmt = $this->pdo->prepare("
             SELECT r.*, u.username, s.title as song_title, s.artist, s.album
             FROM reviews r
-            JOIN users u ON r.user_id = u.id
+            JOIN jukeboxd_users u ON r.user_id = u.id
             JOIN songs s ON r.song_id = s.id
             ORDER BY $orderClause
             LIMIT :limit
@@ -139,7 +139,7 @@ class ReviewModel {
         $stmt = $this->pdo->prepare("
             SELECT r.*, u.username, s.title as song_title, s.artist
             FROM reviews r
-            JOIN users u ON r.user_id = u.id
+            JOIN jukeboxd_users u ON r.user_id = u.id
             JOIN songs s ON r.song_id = s.id
             WHERE r.id = :id
         ");

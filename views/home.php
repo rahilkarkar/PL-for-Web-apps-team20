@@ -21,8 +21,8 @@
         <a href="index.php?action=login">Sign In</a>
         <a href="index.php?action=register">Create Account</a>
       <?php endif; ?>
-      <a href="#">Songs</a>
-      <a href="#">Lists</a>
+      <a href="index.php?action=songs">Songs</a>
+      <a href="index.php?action=listenList">Wishlist</a>
     </nav>
 
     <form class="search">

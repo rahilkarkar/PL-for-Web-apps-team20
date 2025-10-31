@@ -15,14 +15,14 @@
     <nav class="main-nav">
       <?php if (!empty($_SESSION['username'])): ?>
         <a href="index.php?action=profile">Profile</a>
-        <a href="#">Songs</a>
-        <a href="#">Lists</a>
+        <a href="index.php?action=songs">Songs</a>
+        <a href="index.php?action=listenList">Wishlist</a>
         <a href="index.php?action=logout">Sign Out</a>
       <?php else: ?>
         <a href="index.php?action=login">Sign In</a>
         <a href="index.php?action=register">Create Account</a>
-        <a href="#">Songs</a>
-        <a href="#">Lists</a>
+        <a href="index.php?action=songs">Songs</a>
+        <a href="index.php?action=listenList">Wishlist</a>
       <?php endif; ?>
     </nav>
 

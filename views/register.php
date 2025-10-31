@@ -13,10 +13,10 @@
     </a>
 
     <nav class="main-nav">
-      <a href="index.php?action=login">Sign In</a>
-      <a class="active" href="index.php?action=register">Create Account</a>
-      <a href="#">Songs</a>
-      <a href="#">Lists</a>
+  <a href="index.php?action=login">Sign In</a>
+  <a class="active" href="index.php?action=register">Create Account</a>
+  <a href="index.php?action=songs">Songs</a>
+  <a href="index.php?action=listenList">Wishlist</a>
     </nav>
 
     <form class="search">

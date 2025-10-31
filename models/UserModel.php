@@ -18,7 +18,7 @@ class UserModel {
      * Used for login & registration validation.
      */
     public function getUserByEmail($email) {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt = $this->pdo->prepare("SELECT * FROM jukeboxd_users WHERE email = :email");
         $stmt->execute(['email' => $email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -28,7 +28,7 @@ class UserModel {
      * Useful for profile editing later.
      */
     public function getUserById($id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt = $this->pdo->prepare("SELECT * FROM jukeboxd_users WHERE id = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -38,7 +38,7 @@ class UserModel {
      */
     public function addUser($username, $email, $password) {
         $stmt = $this->pdo->prepare("
-            INSERT INTO users (username, email, password)
+            INSERT INTO jukeboxd_users (username, email, password)
             VALUES (:username, :email, :password)
         ");
         $stmt->execute([
@@ -53,7 +53,7 @@ class UserModel {
      */
     public function updateUser($id, $username, $email, $bio = null) {
         $stmt = $this->pdo->prepare("
-            UPDATE users
+            UPDATE jukeboxd_users
             SET username = :username, email = :email, bio = :bio
             WHERE id = :id
         ");
@@ -69,7 +69,7 @@ class UserModel {
      * Delete a user account (not required now but useful later).
      */
     public function deleteUser($id) {
-        $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = :id");
+        $stmt = $this->pdo->prepare("DELETE FROM jukeboxd_users WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
 
@@ -77,7 +77,7 @@ class UserModel {
      * Optional: Return all users (for testing/debugging or admin).
      */
     public function getAllUsers() {
-        $stmt = $this->pdo->query("SELECT id, username, email FROM users ORDER BY id ASC");
+        $stmt = $this->pdo->query("SELECT id, username, email FROM jukeboxd_users ORDER BY id ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -21,8 +21,8 @@
         <a href="index.php?action=login">Sign In</a>
         <a href="index.php?action=register">Create Account</a>
       <?php endif; ?>
-      <a href="#">Songs</a>
-      <a href="#">Lists</a>
+      <a href="index.php?action=songs">Songs</a>
+      <a href="index.php?action=listenList">Wishlist</a>
     </nav>
 
     <form class="search">
@@ -47,11 +47,11 @@
     </section>
 
     <nav class="profile-pills">
-      <a class="pill active" href="index.php?action=profile">Profile</a>
-      <a class="pill" href="index.php?action=activity">Activity</a>
-      <a class="pill" href="index.php?action=reviews">Reviews</a>
-      <a class="pill" href="#">Wishlist</a>
-      <a class="pill" href="#">Playlists</a>
+  <a class="pill active" href="index.php?action=profile">Profile</a>
+  <a class="pill" href="index.php?action=activity">Activity</a>
+  <a class="pill" href="index.php?action=reviews">Reviews</a>
+  <a class="pill" href="index.php?action=listenList">Wishlist</a>
+  <a class="pill" href="#">Playlists</a>
     </nav>
 
     <section class="favorites">
