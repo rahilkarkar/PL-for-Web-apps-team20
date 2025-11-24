@@ -9,18 +9,53 @@ function updateProfile() {
     }
 
     $id = $_SESSION['user_id'];
-    $username = $_POST['username'];
-    $firstName = $_POST['firstName'];
-    $lastName = $_POST['lastName'];
-    $email = $_POST['email'];
-    $bio = $_POST['bio'];
+    $username = trim($_POST['username'] ?? '');
+    $firstName = trim($_POST['firstName'] ?? '');
+    $lastName = trim($_POST['lastName'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $bio = trim($_POST['bio'] ?? '');
 
-    $userModel = new UserModel();
-    $userModel->updateUser($id, $username, $firstName, $lastName, $email, $bio);
+    $errors = [];
+
+    // basic validations
+    if (strlen($username) < 3) {
+        $errors[] = "Username must be at least 3 characters.";
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+    if (strlen($bio) > 500) {
+        $errors[] = "Bio must be less than 500 characters.";
+    }
+
+    // instantiate model with PDO
+    global $pdo; 
+    $userModel = new UserModel($pdo);
+
+    // check for duplicate username excluding current user
+    $existingUser = $userModel->getUserByUsername($username);
+    if ($existingUser && $existingUser['id'] != $id) {
+        $errors[] = "Username already taken.";
+    }
+
+    // check for duplicate email excluding current user
+    $existingEmailUser = $userModel->getUserByEmail($email);
+    if ($existingEmailUser && $existingEmailUser['id'] != $id) {
+        $errors[] = "Email already registered.";
+    }
+
+    if (!empty($errors)) {
+        $_SESSION['profile_errors'] = $errors;
+        header("Location: index.php?action=profile");
+        exit();
+    }
+
+    // if valid, update user
+    $userModel->updateUser($id, $username, $email, $bio);
 
     $_SESSION['username'] = $username;
 
-    header("Location: index.php?action=profile");
+    header("Location: index.php?action=profile&success=1");
     exit();
 }
 ?>

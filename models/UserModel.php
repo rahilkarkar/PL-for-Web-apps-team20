@@ -1,10 +1,4 @@
 <?php
-/**
- * UserModel.php
- * -------------------------------
- * Handles all user-related database operations
- * for the JukeBoxed app.
- */
 
 class UserModel {
     private $pdo;
@@ -33,6 +27,12 @@ class UserModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getUserByUsername($username) {
+        $stmt = $this->pdo->prepare("SELECT * FROM jukeboxd_users WHERE username = :username");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
     /**
      * Insert a new user (during registration).
      */
@@ -73,9 +73,7 @@ class UserModel {
         $stmt->execute(['id' => $id]);
     }
 
-    /**
-     * Optional: Return all users (for testing/debugging or admin).
-     */
+
     public function getAllUsers() {
         $stmt = $this->pdo->query("SELECT id, username, email FROM jukeboxd_users ORDER BY id ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -331,7 +331,7 @@ switch ($action) {
             $newPlaylistId = $playlistModel->createPlaylist($_SESSION['user_id'], $_POST['playlist_name']);
             if ($newPlaylistId) {
                 $playlistModel->addSongToPlaylist($newPlaylistId, $_POST['song_id']);
-                
+
                 // Log activity
                 require_once "models/ActivityModel.php";
                 $activityModel = new ActivityModel($pdo);
@@ -363,7 +363,45 @@ switch ($action) {
         include 'views/home.php';
         break;
 
-    
+    // ---- ADDSONG VALIDATIONS ---
 
+    case 'addSong':
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+        $title = trim($_POST['title'] ?? '');
+        $artist = trim($_POST['artist'] ?? '');
+        $errors = [];
+
+        // Basic validation
+        if (strlen($title) < 2) {
+            $errors[] = "Title must be at least 2 characters.";
+        }
+        if (strlen($artist) < 2) {
+            $errors[] = "Artist must be at least 2 characters.";
+        }
+
+        if (empty($errors)) {
+            // add the song
+            $added = $songModel->addSong($title, $artist);
+
+            if ($added) {
+                // redirect to songs list
+                header('Location: index.php?action=songs&success=1');
+                exit;
+            } else {
+                // failure: redirect with error flag
+                header('Location: index.php?action=songs&error=1');
+                exit;
+            }
+        } else {
+            // redirect with a generic error message
+            header('Location: index.php?action=songs&error=validation');
+            exit;
+        }
+    } else {
+        // Not a POST request or user not logged in
+        header('Location: index.php?action=songs');
+        exit;
+    }
+    break;
 }
 ?>

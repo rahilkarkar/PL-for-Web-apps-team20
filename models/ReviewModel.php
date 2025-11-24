@@ -1,7 +1,6 @@
 <?php
 /**
  * Handles all review-related database operations
- * for the JukeBoxed app.
  */
 
 class ReviewModel {

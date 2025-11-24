@@ -1,7 +1,6 @@
 <?php
 /**
  * Handles all song and listen list related database operations
- * for the JukeBoxed app.
  */
 
 class SongModel {
@@ -153,5 +152,11 @@ class SongModel {
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getSongByTitleAndArtist($title, $artist) {
+        $stmt = $this->pdo->prepare("SELECT * FROM songs WHERE title = :title AND artist = :artist");
+        $stmt->execute(['title' => $title, 'artist' => $artist]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
