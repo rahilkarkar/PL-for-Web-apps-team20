@@ -52,61 +52,21 @@
 
     <section class="activity-feed">
       <div class="section-head">
-        <h3><?= !empty($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'USER' ?></h3>
-        <span class="following-badge">FOLLOWING</span>
-      </div>
+      <h3><?= htmlspecialchars($_SESSION['username']) ?></h3>
+  </div>
 
-      <!-- Static demo items from your original; later you can render from DB -->
-      <article class="activity-card">
-        <p class="activity-text">
-          <strong><?= !empty($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'user' ?></strong> liked <strong>dahalnirusma's</strong> review of <strong>ORENJI</strong>
-        </p>
-        <time class="activity-time">6h</time>
-      </article>
-
-      <article class="activity-card">
-        <p class="activity-text">
-          <strong><?= !empty($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'user' ?></strong> liked <strong>LILBABY's</strong> review of <strong>SOUR</strong>
-        </p>
-        <time class="activity-time">8h</time>
-      </article>
-
-      <article class="activity-card">
-        <p class="activity-text">
-          <strong><?= !empty($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'user' ?></strong> rated <strong>HMU - Greek</strong> ★★★★
-        </p>
-        <time class="activity-time">1d</time>
-      </article>
-
-      <article class="activity-card">
-        <p class="activity-text">
-          <strong><?= !empty($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'user' ?></strong> rated <strong>LADY - Avenoir</strong> ★★★★★
-        </p>
-        <time class="activity-time">1d</time>
-      </article>
-
-      <article class="activity-card">
-        <p class="activity-text">
-          <strong><?= !empty($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'user' ?></strong> added <strong>Vie - Doja Cat</strong> into their wishlist
-        </p>
-        <time class="activity-time">1d</time>
-      </article>
-
-      <article class="activity-card">
-        <p class="activity-text">
-          <strong><?= !empty($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'user' ?></strong> added <strong>Jealous Type - Doja Cat</strong> into playlist: <strong>Feel Good Songs</strong>
-        </p>
-        <time class="activity-time">1d</time>
-      </article>
-
-      <article class="activity-card">
-        <p class="activity-text">
-          <strong><?= !empty($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'user' ?></strong> listened to <strong>Jealous Type - Doja Cat</strong>
-        </p>
-        <time class="activity-time">1d</time>
-      </article>
-    </section>
-  </main>
-</body>
-</html>
-
+  <?php if (!empty($activities)): ?>
+      <?php foreach ($activities as $a): ?>
+          <article class="activity-card">
+            <p class="activity-text">
+              <?= htmlspecialchars($a['activity_text']) ?>
+            </p>
+            <time class="activity-time">
+              <?= date("M j, g:i A", strtotime($a['created_at'])) ?>
+            </time>
+          </article>
+      <?php endforeach; ?>
+  <?php else: ?>
+      <p>No activity yet.</p>
+  <?php endif; ?>
+</section>

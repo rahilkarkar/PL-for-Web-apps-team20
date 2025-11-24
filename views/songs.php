@@ -11,11 +11,13 @@ if (!empty($searchQuery)) {
 
 // Get user's listen list if logged in
 $userListenList = [];
+$userPlaylists = [];
 if (!empty($_SESSION['user_id'])) {
     $listenListData = $songModel->getListenList($_SESSION['user_id']);
     foreach ($listenListData as $item) {
         $userListenList[] = $item['id'];
     }
+    $userPlaylists = $playlistModel->getUserPlaylists($_SESSION['user_id']);
 }
 ?>
 <!doctype html>
@@ -66,8 +68,34 @@ if (!empty($_SESSION['user_id'])) {
       font-size: 0.85rem;
       flex: 1;
     }
+    .playlist-dropdown {
+      background: rgba(0,0,0,0.7);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.8rem;
+      margin-top: 0.5rem;
+      border-radius: 6px;
+      color: white;
+    }
+    .playlist-dropdown select,
+    .playlist-dropdown input {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.4rem;
+      border-radius: 4px;
+    }
+    .playlist-dropdown button {
+      width: 100%;
+      margin-top: 0.3rem;
+    }
   </style>
+  <script>
+    function togglePlaylistMenu(id) {
+      const box = document.getElementById("playlist-box-" + id);
+      box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+  </script>
 </head>
+
 <body class="bg">
   <header class="site-header">
     <a class="logo" href="index.php">
@@ -137,16 +165,52 @@ if (!empty($_SESSION['user_id'])) {
                       <button type="submit" class="btn btn-small dark">Add to Wishlist</button>
                     </form>
                   <?php endif; ?>
+
+                   <!-- add to playlist button -->
+                   <button class="btn btn-small" onclick="togglePlaylistMenu(<?= $song['id'] ?>)">
+                    + Add to Playlist
+                  </button>
+
+                  
+                  <div id="playlist-box-<?= $song['id'] ?>" class="playlist-dropdown" style="display:none;">
+
+                    <?php if (!empty($userPlaylists)): ?>
+                      <!-- Add to Existing Playlist -->
+                      <form action="index.php?action=addToPlaylist" method="POST">
+                        <select name="playlist_id">
+                          <?php foreach ($userPlaylists as $p): ?>
+                            <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['name']) ?></option>
+                          <?php endforeach; ?>
+                        </select>
+
+                        <input type="hidden" name="song_id" value="<?= $song['id'] ?>" />
+                        <button type="submit" class="btn btn-small dark">Add</button>
+                      </form>
+
+                      <hr style="opacity:0.3; margin:6px 0;">
+                    <?php endif; ?>
+
+                    <!-- Create New Playlist and Add -->
+                    <form action="index.php?action=createPlaylistAndAdd" method="POST">
+                      <input type="text" name="playlist_name" placeholder="New Playlist Name" required />
+                      <input type="hidden" name="song_id" value="<?= $song['id'] ?>" />
+                      <button type="submit" class="btn btn-small">Create & Add</button>
+                    </form>
+                  </div>
+
                 </div>
               <?php endif; ?>
             </article>
+
           <?php endforeach; ?>
         </div>
+
       <?php else: ?>
         <div style="text-align: center; padding: 3rem; color: rgba(255, 255, 255, 0.6);">
           <p>No songs found. <?= !empty($searchQuery) ? 'Try a different search term.' : '' ?></p>
         </div>
       <?php endif; ?>
+
     </section>
   </main>
 </body>

@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS listen_list (
     UNIQUE(user_id, song_id)
 );
 
--- Followers table (for Part C - follow system)
+-- Followers table 
 CREATE TABLE IF NOT EXISTS followers (
     id SERIAL PRIMARY KEY,
     follower_id INT NOT NULL REFERENCES jukeboxd_users(id) ON DELETE CASCADE,
@@ -50,6 +50,29 @@ CREATE TABLE IF NOT EXISTS followers (
     UNIQUE(follower_id, following_id),
     CHECK (follower_id != following_id)
 );
+
+CREATE TABLE activity (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    activity_text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE playlists (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE playlist_songs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    playlist_id INT NOT NULL,
+    song_id INT NOT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- Insert some sample songs for testing
 INSERT INTO songs (title, artist, album, release_year, genre) VALUES

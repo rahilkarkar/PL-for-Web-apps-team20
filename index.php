@@ -181,8 +181,12 @@ switch ($action) {
         break;
 
     case 'activity':
-        include 'views/activity.php';
+        require_once "models/ActivityModel.php";
+        $model = new ActivityModel();
+        $activities = $model->getActivitiesForUser($_SESSION['user_id']);
+        require "views/activity.php";
         break;
+        
 
     case 'reviews':
         include 'views/reviews.php';
@@ -280,6 +284,75 @@ switch ($action) {
         include 'views/listen_list.php';
         break;
 
+    // ------ PLAYLIST PAGE ------
+    case 'playlists':
+        if (empty($_SESSION['user_id'])) {
+            header("Location: index.php?action=login");
+            exit;
+        }
+        $playlists = $playlistModel->getUserPlaylists($_SESSION['user_id']);
+        include 'views/playlist.php';
+        break;
+        
+    case 'createPlaylist':
+        if (!empty($_POST['playlist_name'])) {
+            $playlistModel->createPlaylist($_SESSION['user_id'], $_POST['playlist_name']);
+            if ($newPlaylistId) {
+                // log the activity
+                require_once "models/ActivityModel.php";
+                $activityModel = new ActivityModel($pdo);
+                $activityModel->add($_SESSION['user_id'], "created a new playlist: " . htmlspecialchars($_POST['playlist_name']));
+            }
+        }
+        header("Location: index.php?action=playlists");
+        exit;
+        
+    case 'addToPlaylist':
+        if (!empty($_POST['playlist_id']) && !empty($_POST['song_id'])) {
+            $playlistModel->addSongToPlaylist($_POST['playlist_id'], $_POST['song_id']);
+
+             // Log activity
+            require_once "models/ActivityModel.php";
+            $activityModel = new ActivityModel($pdo);
+
+            // Fetch song title and playlist name for log
+            $song = $songModel->getSongById($_POST['song_id']);
+            $playlist = $playlistModel->getPlaylist($_POST['playlist_id'], $_SESSION['user_id']);
+            if ($song && $playlist) {
+                $activityModel->add($_SESSION['user_id'], "added song '{$song['title']}' to playlist '{$playlist['name']}'");
+            }
+        }
+        // return to songs page
+        header("Location: " . $_SERVER["HTTP_REFERER"]);
+        exit;
+        
+    case 'createPlaylistAndAdd':
+        if (!empty($_POST['playlist_name']) && !empty($_POST['song_id'])) {
+            $newPlaylistId = $playlistModel->createPlaylist($_SESSION['user_id'], $_POST['playlist_name']);
+            if ($newPlaylistId) {
+                $playlistModel->addSongToPlaylist($newPlaylistId, $_POST['song_id']);
+                
+                // Log activity
+                require_once "models/ActivityModel.php";
+                $activityModel = new ActivityModel($pdo);
+
+                $song = $songModel->getSongById($_POST['song_id']);
+                if ($song) {
+                    $activityModel->add($_SESSION['user_id'], "created a new playlist '{$_POST['playlist_name']}' and added song '{$song['title']}'");
+                 }
+            }
+        }
+        header("Location: " . $_SERVER["HTTP_REFERER"]);
+        exit;
+        
+    case 'viewPlaylist':
+        if (!empty($_GET['id'])) {
+            $playlist = $playlistModel->getPlaylist($_GET['id'], $_SESSION['user_id']);
+            $playlistSongs = $playlistModel->getPlaylistSongs($_GET['id']);
+            include 'views/playlistSongs.php';
+        }
+        break;
+
     // ---------- SEARCH DEMO (JSON API DEMONSTRATION) ----------
     case 'searchDemo':
         include 'views/search_demo.php';
@@ -289,5 +362,8 @@ switch ($action) {
     default:
         include 'views/home.php';
         break;
+
+    
+
 }
 ?>
