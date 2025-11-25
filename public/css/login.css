@@ -83,7 +83,7 @@ body.bg {
 }
 
 .search input::placeholder {
-  color: #7a8b93;
+  color: #a0b5be;
 }
 
 .search input:focus {
@@ -147,7 +147,7 @@ body.bg {
 }
 
 .signin-input::placeholder {
-  color: #888;
+  color: #999;
 }
 
 /* CSS RULE 11: Button with Hover Effect */

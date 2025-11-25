@@ -81,7 +81,7 @@
   }
 
   .search input::placeholder {
-    color: #7a8b93;
+    color: #a0b5be;
   }
 
   .search input:focus {
@@ -171,7 +171,7 @@
 
   .pill.active {
     background: var(--pill-active);
-    color: #102028;
+    color: #0a1418;
   }
 
   /* CSS RULE 11: Favorite Music Section Layout */

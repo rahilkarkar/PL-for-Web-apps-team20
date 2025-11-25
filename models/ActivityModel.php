@@ -1,13 +1,13 @@
 <?php
 class ActivityModel {
-    private $db;
+    private $pdo;
 
-    public function __construct() {
-        $this->db = Database::getInstance();
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
     }
 
     public function getActivitiesForUser($user_id) {
-        $stmt = $this->db->prepare("
+        $stmt = $this->pdo->prepare("
             SELECT activity_text, created_at
             FROM activity
             WHERE user_id = ?
@@ -18,10 +18,15 @@ class ActivityModel {
     }
 
     public function logActivity($user_id, $text) {
-        $stmt = $this->db->prepare("
+        $stmt = $this->pdo->prepare("
             INSERT INTO activity (user_id, activity_text)
             VALUES (?, ?)
         ");
         $stmt->execute([$user_id, $text]);
+    }
+
+    // Alias for compatibility with index.php
+    public function add($user_id, $text) {
+        return $this->logActivity($user_id, $text);
     }
 }

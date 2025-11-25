@@ -62,30 +62,66 @@ if (!empty($_SESSION['user_id'])) {
     .song-actions {
       display: flex;
       gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .song-actions form {
+      flex: 1;
+      min-width: 120px;
     }
     .btn-small {
       padding: 0.5rem 1rem;
       font-size: 0.85rem;
-      flex: 1;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(74, 158, 255, 0.3);
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn-small:hover {
+      background: rgba(74, 158, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    .btn-small.dark {
+      background: rgba(118, 75, 162, 0.3);
+    }
+    .btn-small.dark:hover {
+      background: rgba(118, 75, 162, 0.5);
     }
     .playlist-dropdown {
-      background: rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 0.8rem;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid rgba(74, 158, 255, 0.4);
+      padding: 1rem;
       margin-top: 0.5rem;
-      border-radius: 6px;
+      border-radius: 8px;
       color: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     .playlist-dropdown select,
     .playlist-dropdown input {
       width: 100%;
       margin-bottom: 0.5rem;
-      padding: 0.4rem;
-      border-radius: 4px;
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 0.9rem;
+    }
+    .playlist-dropdown select:focus,
+    .playlist-dropdown input:focus {
+      outline: none;
+      border-color: rgba(74, 158, 255, 0.6);
     }
     .playlist-dropdown button {
       width: 100%;
       margin-top: 0.3rem;
+    }
+    .playlist-dropdown hr {
+      opacity: 0.3;
+      margin: 0.8rem 0;
+      border-color: rgba(255,255,255,0.2);
     }
   </style>
   <script>
@@ -107,6 +143,7 @@ if (!empty($_SESSION['user_id'])) {
         <a href="index.php?action=profile">Profile</a>
         <a class="active" href="index.php?action=songs">Songs</a>
         <a href="index.php?action=listenList">Wishlist</a>
+        <a href="index.php?action=playlists">Playlists</a>
         <a href="index.php?action=logout">Sign Out</a>
       <?php else: ?>
         <a href="index.php?action=login">Sign In</a>
@@ -166,13 +203,15 @@ if (!empty($_SESSION['user_id'])) {
                     </form>
                   <?php endif; ?>
 
-                   <!-- add to playlist button -->
-                   <button class="btn btn-small" onclick="togglePlaylistMenu(<?= $song['id'] ?>)">
-                    + Add to Playlist
-                  </button>
+                </div>
 
-                  
-                  <div id="playlist-box-<?= $song['id'] ?>" class="playlist-dropdown" style="display:none;">
+                <!-- add to playlist button -->
+                <button class="btn-small" onclick="togglePlaylistMenu(<?= $song['id'] ?>); return false;"
+                        style="width: 100%; margin-top: 0.5rem;">
+                  + Add to Playlist
+                </button>
+
+                <div id="playlist-box-<?= $song['id'] ?>" class="playlist-dropdown" style="display:none;">
 
                     <?php if (!empty($userPlaylists)): ?>
                       <!-- Add to Existing Playlist -->
@@ -184,21 +223,19 @@ if (!empty($_SESSION['user_id'])) {
                         </select>
 
                         <input type="hidden" name="song_id" value="<?= $song['id'] ?>" />
-                        <button type="submit" class="btn btn-small dark">Add</button>
+                        <button type="submit" class="btn-small dark">Add</button>
                       </form>
 
-                      <hr style="opacity:0.3; margin:6px 0;">
+                      <hr>
                     <?php endif; ?>
 
                     <!-- Create New Playlist and Add -->
                     <form action="index.php?action=createPlaylistAndAdd" method="POST">
                       <input type="text" name="playlist_name" placeholder="New Playlist Name" required />
                       <input type="hidden" name="song_id" value="<?= $song['id'] ?>" />
-                      <button type="submit" class="btn btn-small">Create & Add</button>
+                      <button type="submit" class="btn-small">Create & Add</button>
                     </form>
                   </div>
-
-                </div>
               <?php endif; ?>
             </article>
 

@@ -84,7 +84,7 @@ body.bg {
 }
 
 .search input::placeholder {
-  color: #7a8b93;
+  color: #a0b5be;
 }
 
 .search input:focus {
@@ -157,7 +157,7 @@ body.bg {
 
 .pill.active {
   background: var(--pill-active);
-  color: #102028;
+  color: #0a1418;
 }
 
 /* CSS RULE 9: Reviews Section with Sort Controls */

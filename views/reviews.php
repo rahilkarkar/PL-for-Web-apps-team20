@@ -20,6 +20,7 @@ $sortBy = $_GET['sort'] ?? 'recent';
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JukeBoxed — Reviews</title>
   <link rel="stylesheet" href="<?= $BASE_PATH ?>/public/css/reviews.css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
     .review-form {
       background: rgba(255, 255, 255, 0.05);
@@ -122,7 +123,7 @@ $sortBy = $_GET['sort'] ?? 'recent';
       <a class="pill" href="index.php?action=activity">Activity</a>
       <a class="pill active" href="index.php?action=reviews">Reviews</a>
       <a class="pill" href="index.php?action=listenList">Wishlist</a>
-      <a class="pill" href="#">Playlists</a>
+      <a class="pill" href="index.php?action=playlists">Playlists</a>
     </nav>
 
     <?php if (!empty($_SESSION['user_id'])): ?>
@@ -222,7 +223,7 @@ $sortBy = $_GET['sort'] ?? 'recent';
               <div class="rating"><?= $stars ?></div>
               <p class="review-text"><?= htmlspecialchars($review['review_text']) ?></p>
               <div style="display: flex; gap: 1rem;">
-                <small style="color: rgba(255,255,255,0.5);">
+                <small style="color: rgba(255,255,255,0.7);">
                   <?= date('M j, Y', strtotime($review['created_at'])) ?>
                 </small>
                 <form action="index.php?action=deleteReview" method="POST"
@@ -243,5 +244,143 @@ $sortBy = $_GET['sort'] ?? 'recent';
       <?php endif; ?>
     </section>
   </main>
+
+  <script>
+    // jQuery implementation (Sprint Requirement: Use jQuery)
+    $(document).ready(function() {
+      // Star rating hover effect with jQuery
+      $('.rating-input label').hover(
+        function() {
+          // Mouse enter: highlight this and all previous stars
+          $(this).css('color', '#ffd700');
+          $(this).prevAll('label').css('color', '#ffd700');
+        },
+        function() {
+          // Mouse leave: reset colors for non-selected stars
+          $('.rating-input label').css('color', 'rgba(255,255,255,0.7)');
+          // Keep selected star highlighted
+          $('.rating-input input:checked').next('label').css('color', '#ffd700')
+            .prevAll('label').css('color', '#ffd700');
+        }
+      );
+
+      // When a rating is selected, keep it highlighted
+      $('.rating-input input[type="radio"]').on('change', function() {
+        $('.rating-input label').css('color', 'rgba(255,255,255,0.7)');
+        $(this).next('label').css('color', '#ffd700')
+          .prevAll('label').css('color', '#ffd700');
+      });
+
+      // Form validation with jQuery (Sprint Requirement: Client-side validation)
+      $('form[action*="submitReview"]').on('submit', function(e) {
+        const songId = $('#song_id').val();
+        const rating = $('input[name="rating"]:checked').val();
+        const reviewText = $('#review_text').val().trim();
+        let errors = [];
+
+        if (!songId || songId === '') {
+          errors.push('Please select a song');
+        }
+        if (!rating) {
+          errors.push('Please select a rating');
+        }
+        if (reviewText.length < 3) {
+          errors.push('Review must be at least 3 characters');
+        }
+
+        if (errors.length > 0) {
+          e.preventDefault();
+          // DOM manipulation with jQuery
+          let errorHtml = '<div class="error-message" style="margin-top: 1rem;"><ul style="margin: 0; padding-left: 1.5rem;">';
+          errors.forEach(function(err) {
+            errorHtml += '<li>' + err + '</li>';
+          });
+          errorHtml += '</ul></div>';
+
+          // Remove old errors and add new ones
+          $('.review-form .error-message').remove();
+          $('.review-form h3').after(errorHtml);
+
+          // Smooth scroll to error
+          $('html, body').animate({
+            scrollTop: $('.error-message').offset().top - 100
+          }, 500);
+        }
+      });
+
+      // Filter reviews by rating with jQuery animation (Sprint Requirement: DOM Manipulation)
+      $('<div class="filter-buttons" style="margin: 1rem 0;"></div>').insertAfter('.section-head');
+      const filterButtons = `
+        <button class="filter-btn active" data-filter="all">All Reviews</button>
+        <button class="filter-btn" data-filter="5">5★ Only</button>
+        <button class="filter-btn" data-filter="4">4★+</button>
+        <button class="filter-btn" data-filter="3">3★+</button>
+      `;
+      $('.filter-buttons').html(filterButtons);
+
+      // Style filter buttons
+      $('.filter-btn').css({
+        padding: '0.5rem 1rem',
+        margin: '0 0.5rem 0.5rem 0',
+        border: '1px solid rgba(255,255,255,0.3)',
+        background: 'rgba(0,0,0,0.3)',
+        color: 'rgba(255,255,255,0.7)',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        transition: 'all 0.2s'
+      });
+
+      $('.filter-btn.active').css({
+        background: '#4a9eff',
+        color: '#fff',
+        borderColor: '#4a9eff'
+      });
+
+      // Filter functionality
+      $('.filter-btn').on('click', function() {
+        const filter = $(this).data('filter');
+
+        // Update active button
+        $('.filter-btn').removeClass('active').css({
+          background: 'rgba(0,0,0,0.3)',
+          color: 'rgba(255,255,255,0.7)',
+          borderColor: 'rgba(255,255,255,0.3)'
+        });
+        $(this).addClass('active').css({
+          background: '#4a9eff',
+          color: '#fff',
+          borderColor: '#4a9eff'
+        });
+
+        // Show/hide reviews with animation
+        if (filter === 'all') {
+          $('.review-card').fadeIn(300);
+        } else {
+          $('.review-card').each(function() {
+            const stars = $(this).find('.rating').text().length;
+            if (stars >= parseInt(filter)) {
+              $(this).fadeIn(300);
+            } else {
+              $(this).fadeOut(300);
+            }
+          });
+        }
+      });
+
+      // Character counter for review textarea
+      const maxLength = 500;
+      $('#review_text').after('<small style="color: rgba(255,255,255,0.7); display: block; margin-top: 0.25rem;">Characters: <span id="char-count">0</span>/' + maxLength + '</small>');
+
+      $('#review_text').on('input', function() {
+        const length = $(this).val().length;
+        $('#char-count').text(length);
+        if (length > maxLength) {
+          $('#char-count').parent().css('color', '#ff6b6b');
+        } else {
+          $('#char-count').parent().css('color', 'rgba(255,255,255,0.5)');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

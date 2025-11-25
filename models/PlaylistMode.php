@@ -54,5 +54,14 @@ public function getPlaylistSongs($playlistId) {
     $stmt->execute([$playlistId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+// Remove song from playlist
+public function removeSongFromPlaylist($playlistId, $songId) {
+    $stmt = $this->db->prepare("
+        DELETE FROM playlist_songs
+        WHERE playlist_id = ? AND song_id = ?
+    ");
+    return $stmt->execute([$playlistId, $songId]);
+}
 }
 

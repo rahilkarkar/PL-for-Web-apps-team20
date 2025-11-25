@@ -51,16 +51,18 @@ class UserModel {
     /**
      * Update user information (for Settings page).
      */
-    public function updateUser($id, $username, $email, $bio = null) {
+    public function updateUser($id, $username, $email, $bio = null, $firstName = null, $lastName = null) {
         $stmt = $this->pdo->prepare("
             UPDATE jukeboxd_users
-            SET username = :username, email = :email, bio = :bio
+            SET username = :username, email = :email, bio = :bio, first_name = :first_name, last_name = :last_name
             WHERE id = :id
         ");
         $stmt->execute([
             'username' => $username,
             'email' => $email,
             'bio' => $bio,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
             'id' => $id
         ]);
     }

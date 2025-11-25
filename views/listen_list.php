@@ -41,6 +41,27 @@
       padding: 3rem;
       color: rgba(255, 255, 255, 0.6);
     }
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(255, 107, 107, 0.3);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .btn:hover {
+      background: rgba(255, 107, 107, 0.5);
+      transform: translateY(-1px);
+    }
+    .btn.dark {
+      background: rgba(74, 158, 255, 0.3);
+    }
+    .btn.dark:hover {
+      background: rgba(74, 158, 255, 0.5);
+    }
   </style>
 </head>
 <body class="bg">
@@ -54,6 +75,7 @@
         <a href="index.php?action=profile">Profile</a>
         <a href="index.php?action=songs">Songs</a>
         <a class="active" href="index.php?action=listenList">Wishlist</a>
+        <a href="index.php?action=playlists">Playlists</a>
         <a href="index.php?action=logout">Sign Out</a>
       <?php else: ?>
         <a href="index.php?action=login">Sign In</a>
@@ -83,7 +105,7 @@
       <a class="pill" href="index.php?action=activity">Activity</a>
       <a class="pill" href="index.php?action=reviews">Reviews</a>
       <a class="pill active" href="index.php?action=listenList">Wishlist</a>
-      <a class="pill" href="#">Playlists</a>
+      <a class="pill" href="index.php?action=playlists">Playlists</a>
     </nav>
 
     <section class="listen-list-section">

@@ -51,10 +51,16 @@ $BASE_PATH = getBasePath();
 require_once 'models/UserModel.php';
 require_once 'models/ReviewModel.php';
 require_once 'models/SongModel.php';
+require_once 'models/PlaylistMode.php';
+require_once 'models/ActivityModel.php';
+require_once 'models/FollowerModel.php';
 
 $userModel = new UserModel($pdo);
 $reviewModel = new ReviewModel($pdo);
 $songModel = new SongModel($pdo);
+$playlistModel = new PlaylistModel($pdo);
+$activityModel = new ActivityModel($pdo);
+$followerModel = new FollowerModel($pdo);
 
 // ---------------- ROUTING ----------------
 $action = $_GET['action'] ?? 'home';
@@ -181,9 +187,11 @@ switch ($action) {
         break;
 
     case 'activity':
-        require_once "models/ActivityModel.php";
-        $model = new ActivityModel();
-        $activities = $model->getActivitiesForUser($_SESSION['user_id']);
+        if (empty($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+        $activities = $activityModel->getActivitiesForUser($_SESSION['user_id']);
         require "views/activity.php";
         break;
         
@@ -195,6 +203,65 @@ switch ($action) {
     case 'settings':
         include 'views/settings.php';
         break;
+
+    case 'followers':
+        include 'views/followers.php';
+        break;
+
+    case 'discover':
+        include 'views/discover.php';
+        break;
+
+    // ---------- UPDATE PROFILE ----------
+    case 'updateProfile':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+            $id = $_SESSION['user_id'];
+            $username = trim($_POST['username'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $bio = trim($_POST['bio'] ?? '');
+            $firstName = trim($_POST['firstName'] ?? '');
+            $lastName = trim($_POST['lastName'] ?? '');
+            $errors = [];
+
+            // Validation
+            if (strlen($username) < 3) {
+                $errors[] = "Username must be at least 3 characters.";
+            }
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Invalid email format.";
+            }
+            if (strlen($bio) > 500) {
+                $errors[] = "Bio must be less than 500 characters.";
+            }
+
+            // Check for duplicate username
+            $existingUser = $userModel->getUserByUsername($username);
+            if ($existingUser && $existingUser['id'] != $id) {
+                $errors[] = "Username already taken.";
+            }
+
+            // Check for duplicate email
+            $existingEmailUser = $userModel->getUserByEmail($email);
+            if ($existingEmailUser && $existingEmailUser['id'] != $id) {
+                $errors[] = "Email already registered.";
+            }
+
+            if (!empty($errors)) {
+                $_SESSION['profile_errors'] = $errors;
+                header("Location: index.php?action=settings");
+                exit;
+            }
+
+            // Update user including first and last name
+            $userModel->updateUser($id, $username, $email, $bio, $firstName, $lastName);
+            $_SESSION['username'] = $username;
+            $_SESSION['email'] = $email;
+
+            header("Location: index.php?action=settings&success=1");
+            exit;
+        }
+        header("Location: index.php?action=settings");
+        exit;
 
     // ---------- SONGS ----------
     case 'songs':
@@ -226,6 +293,16 @@ switch ($action) {
             if (empty($errors)) {
                 $success = $reviewModel->addReview($_SESSION['user_id'], $songId, $rating, $reviewText);
                 if ($success) {
+                    // Log activity for the review
+                    $song = $songModel->getSongById($songId);
+                    if ($song) {
+                        $stars = str_repeat('★', $rating);
+                        $activityModel->logActivity(
+                            $_SESSION['user_id'],
+                            "reviewed '{$song['title']}' by {$song['artist']} - {$stars}"
+                        );
+                    }
+
                     header('Location: index.php?action=reviews&success=1');
                     exit;
                 } else {
@@ -296,11 +373,9 @@ switch ($action) {
         
     case 'createPlaylist':
         if (!empty($_POST['playlist_name'])) {
-            $playlistModel->createPlaylist($_SESSION['user_id'], $_POST['playlist_name']);
+            $newPlaylistId = $playlistModel->createPlaylist($_SESSION['user_id'], $_POST['playlist_name']);
             if ($newPlaylistId) {
                 // log the activity
-                require_once "models/ActivityModel.php";
-                $activityModel = new ActivityModel($pdo);
                 $activityModel->add($_SESSION['user_id'], "created a new playlist: " . htmlspecialchars($_POST['playlist_name']));
             }
         }
@@ -311,11 +386,7 @@ switch ($action) {
         if (!empty($_POST['playlist_id']) && !empty($_POST['song_id'])) {
             $playlistModel->addSongToPlaylist($_POST['playlist_id'], $_POST['song_id']);
 
-             // Log activity
-            require_once "models/ActivityModel.php";
-            $activityModel = new ActivityModel($pdo);
-
-            // Fetch song title and playlist name for log
+            // Log activity - fetch song title and playlist name
             $song = $songModel->getSongById($_POST['song_id']);
             $playlist = $playlistModel->getPlaylist($_POST['playlist_id'], $_SESSION['user_id']);
             if ($song && $playlist) {
@@ -333,13 +404,10 @@ switch ($action) {
                 $playlistModel->addSongToPlaylist($newPlaylistId, $_POST['song_id']);
 
                 // Log activity
-                require_once "models/ActivityModel.php";
-                $activityModel = new ActivityModel($pdo);
-
                 $song = $songModel->getSongById($_POST['song_id']);
                 if ($song) {
                     $activityModel->add($_SESSION['user_id'], "created a new playlist '{$_POST['playlist_name']}' and added song '{$song['title']}'");
-                 }
+                }
             }
         }
         header("Location: " . $_SERVER["HTTP_REFERER"]);
@@ -353,10 +421,66 @@ switch ($action) {
         }
         break;
 
+    case 'removeFromPlaylist':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+            $playlistId = intval($_POST['playlist_id'] ?? 0);
+            $songId = intval($_POST['song_id'] ?? 0);
+
+            if ($playlistId > 0 && $songId > 0) {
+                $playlistModel->removeSongFromPlaylist($playlistId, $songId);
+
+                // Log activity
+                $playlist = $playlistModel->getPlaylist($playlistId, $_SESSION['user_id']);
+                $song = $songModel->getSongById($songId);
+                if ($playlist && $song) {
+                    $activityModel->logActivity($_SESSION['user_id'], "removed '{$song['title']}' from playlist '{$playlist['name']}'");
+                }
+            }
+        }
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? 'index.php?action=playlists'));
+        exit;
+
     // ---------- SEARCH DEMO (JSON API DEMONSTRATION) ----------
     case 'searchDemo':
         include 'views/search_demo.php';
         break;
+
+    // ---------- DATABASE TOOLS (Development Only) ----------
+    case 'dbMonitor':
+        include 'db-monitor.php';
+        exit;
+
+    case 'dbReset':
+        include 'db-reset.php';
+        exit;
+
+    // ---------- FOLLOW/UNFOLLOW ----------
+    case 'followUser':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+            $followingId = intval($_POST['following_id'] ?? 0);
+            if ($followingId > 0 && $followingId != $_SESSION['user_id']) {
+                $success = $followerModel->followUser($_SESSION['user_id'], $followingId);
+                if ($success) {
+                    // Log activity
+                    $followedUser = $userModel->getUserById($followingId);
+                    if ($followedUser) {
+                        $activityModel->logActivity($_SESSION['user_id'], "started following " . $followedUser['username']);
+                    }
+                }
+            }
+        }
+        header('Location: ' . ($_POST['redirect'] ?? 'index.php?action=profile'));
+        exit;
+
+    case 'unfollowUser':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
+            $followingId = intval($_POST['following_id'] ?? 0);
+            if ($followingId > 0) {
+                $followerModel->unfollowUser($_SESSION['user_id'], $followingId);
+            }
+        }
+        header('Location: ' . ($_POST['redirect'] ?? 'index.php?action=profile'));
+        exit;
 
     // ---------- DEFAULT ----------
     default:

@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS jukeboxd_users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
     bio TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -51,26 +53,26 @@ CREATE TABLE IF NOT EXISTS followers (
     CHECK (follower_id != following_id)
 );
 
-CREATE TABLE activity (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+CREATE TABLE IF NOT EXISTS activity (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES jukeboxd_users(id) ON DELETE CASCADE,
     activity_text TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE playlists (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+CREATE TABLE IF NOT EXISTS playlists (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES jukeboxd_users(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE playlist_songs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    playlist_id INT NOT NULL,
-    song_id INT NOT NULL,
-    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS playlist_songs (
+    id SERIAL PRIMARY KEY,
+    playlist_id INT NOT NULL REFERENCES playlists(id) ON DELETE CASCADE,
+    song_id INT NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(playlist_id, song_id)
 );
 
 

@@ -47,7 +47,7 @@
   <a class="pill active" href="index.php?action=activity">Activity</a>
   <a class="pill" href="index.php?action=reviews">Reviews</a>
   <a class="pill" href="index.php?action=listenList">Wishlist</a>
-  <a class="pill" href="#">Playlists</a>
+  <a class="pill" href="index.php?action=playlists">Playlists</a>
     </nav>
 
     <section class="activity-feed">
@@ -70,3 +70,7 @@
       <p>No activity yet.</p>
   <?php endif; ?>
 </section>
+
+  </main>
+</body>
+</html>
