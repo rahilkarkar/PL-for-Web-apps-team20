@@ -140,15 +140,15 @@
 
 
 <!-- create playlist popup -->
-<div id="createPlaylistForm" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
-  <div style="background:#222; padding:2rem; border-radius:12px; max-width: 400px; width: 90%; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
-    <button onclick="document.getElementById('createPlaylistForm').style.display='none'" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; opacity: 0.7;">&times;</button>
+<div id="createPlaylistForm">
+  <div class="popup-content">
+    <button onclick="document.getElementById('createPlaylistForm').style.display='none'" class="close-btn">&times;</button>
     <form action="index.php?action=createPlaylist" method="POST">
-      <h3 style="margin-top: 0; color: #fff;">Create New Playlist</h3>
-      <input type="text" name="playlist_name" placeholder="Playlist name" required style="width: 100%; padding: 0.75rem; margin: 1rem 0; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.3); color: #fff; font-size: 1rem;">
-      <div style="display: flex; gap: 1rem;">
-        <button type="button" onclick="document.getElementById('createPlaylistForm').style.display='none'" class="btn" style="flex: 1; background: rgba(255,255,255,0.1);">Cancel</button>
-        <button type="submit" class="btn dark" style="flex: 1;">Create</button>
+      <h3 style="margin-top: 0; color: var(--text);">Create New Playlist</h3>
+      <input type="text" name="playlist_name" placeholder="Playlist name" required>
+      <div class="btn-group">
+        <button type="button" onclick="document.getElementById('createPlaylistForm').style.display='none'" class="btn cancel">Cancel</button>
+        <button type="submit" class="btn dark">Create</button>
       </div>
     </form>
   </div>
