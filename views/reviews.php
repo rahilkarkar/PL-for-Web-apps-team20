@@ -1,12 +1,14 @@
 <?php
 // Fetch user's reviews if logged in
 $reviews = [];
+$followingReviews = [];
 $songs = [];
 $errors = $_SESSION['review_errors'] ?? [];
 unset($_SESSION['review_errors']);
 
 if (!empty($_SESSION['user_id'])) {
     $reviews = $reviewModel->getReviewsByUserId($_SESSION['user_id']);
+    $followingReviews = $reviewModel->getFollowingReviews($_SESSION['user_id']);
     $songs = $songModel->getAllSongs(100);
 }
 
@@ -187,63 +189,77 @@ $sortBy = $_GET['sort'] ?? 'recent';
       </section>
 
     <?php endif; ?>
+    <nav class="review-tabs">
+  <a href="index.php?action=reviews&tab=my" class="review-tab <?= ($_GET['tab'] ?? 'my') === 'my' ? 'active' : '' ?>">My Reviews</a>
+  <a href="index.php?action=reviews&tab=following" class="review-tab <?= ($_GET['tab'] ?? 'my') === 'following' ? 'active' : '' ?>">Following</a>
+</nav>
 
-    <section class="reviews-section">
-      <div class="section-head">
-        <h3>MY REVIEWS</h3>
-        <div class="sort-controls">
-          <label for="sort-select">Sort by</label>
-          <select id="sort-select" name="sort" onchange="window.location.href='index.php?action=reviews&sort=' + this.value">
-            <option value="recent" <?= $sortBy === 'recent' ? 'selected' : '' ?>>RECENT</option>
-            <option value="rating" <?= $sortBy === 'rating' ? 'selected' : '' ?>>RATING</option>
-          </select>
+// Logic for displaying either a user's reviews or their following's reviews 
+<section class="reviews-section">
+  <?php $tab = $_GET['tab'] ?? 'my'; ?>
+  <div class="section-head">
+    <h3>
+      <?= $tab === 'following' ? "FOLLOWING'S REVIEWS" : "MY REVIEWS" ?>
+    </h3>
+    <div class="sort-controls">
+      <label for="sort-select">Sort by</label>
+      <select id="sort-select" name="sort" onchange="window.location.href='index.php?action=reviews&sort=' + this.value">
+        <option value="recent" <?= $sortBy === 'recent' ? 'selected' : '' ?>>RECENT</option>
+        <option value="rating" <?= $sortBy === 'rating' ? 'selected' : '' ?>>RATING</option>
+      </select>
+    </div>
+  </div>
+
+  // Choose which list of reviews to display depending on which tab the user is on - following or checking their own reviews
+  <?php $list = ($tab === 'following') ? $followingReviews : $reviews; ?>
+
+  <?php if (!empty($_SESSION['user_id']) && count($list) > 0): ?>
+    <?php foreach ($list as $review): ?>
+      <?php $stars = str_repeat('★', $review['rating']); ?>
+
+      <article class="review-card">
+        <div class="album-cover"></div>
+
+        <div class="review-content">
+          <div class="review-header">
+            <h4 class="song-title"><?= strtoupper(htmlspecialchars($review['song_title'])) ?></h4>
+            <p class="artist-name"><?= htmlspecialchars($review['artist']) ?></p>
+
+            <?php if ($tab === 'following'): ?>
+              <p style="color: var(--subtle); font-size: .85rem;">
+                Reviewed by <strong><?= htmlspecialchars($review['username']) ?></strong>
+              </p>
+            <?php endif; ?>
+          </div>
+
+          <div class="rating"><?= $stars ?></div>
+          <p class="review-text"><?= htmlspecialchars($review['review_text']) ?></p>
+
+          <small style="color: rgba(255,255,255,0.7);">
+            <?= date('M j, Y', strtotime($review['created_at'])) ?>
+          </small>
+
+          <?php if ($tab === 'my'): ?>
+            <form action="index.php?action=deleteReview" method="POST" onsubmit="return confirm('Are you sure you want to delete this review?')">
+              <input type="hidden" name="review_id" value="<?= $review['id'] ?>" />
+              <button type="submit" class="btn" style="padding: .25rem .5rem; font-size: .85rem;">Delete</button>
+            </form>
+          <?php endif; ?>
         </div>
-      </div>
+      </article>
+    <?php endforeach; ?>
 
-      <?php if (!empty($_SESSION['user_id']) && count($reviews) > 0): ?>
-        <?php
-        // Sort reviews based on selected option
-        if ($sortBy === 'rating') {
-            usort($reviews, function($a, $b) {
-                return $b['rating'] - $a['rating'];
-            });
-        }
+  <?php else: ?>
+    <div class="no-reviews">
+      <p>
+        <?= $tab === 'following' 
+            ? "People you follow haven't posted any reviews yet." 
+            : "No reviews yet. Write your first review above!" ?>
+      </p>
+    </div>
+  <?php endif; ?>
+</section>
 
-        // Display reviews using loop
-        foreach ($reviews as $review):
-            $stars = str_repeat('★', $review['rating']);
-        ?>
-          <article class="review-card">
-            <div class="album-cover"></div>
-            <div class="review-content">
-              <div class="review-header">
-                <h4 class="song-title"><?= strtoupper(htmlspecialchars($review['song_title'])) ?></h4>
-                <p class="artist-name"><?= htmlspecialchars($review['artist']) ?></p>
-              </div>
-              <div class="rating"><?= $stars ?></div>
-              <p class="review-text"><?= htmlspecialchars($review['review_text']) ?></p>
-              <div style="display: flex; gap: 1rem;">
-                <small style="color: rgba(255,255,255,0.7);">
-                  <?= date('M j, Y', strtotime($review['created_at'])) ?>
-                </small>
-                <form action="index.php?action=deleteReview" method="POST"
-                      onsubmit="return confirm('Are you sure you want to delete this review?')">
-                  <input type="hidden" name="review_id" value="<?= $review['id'] ?>" />
-                  <button type="submit" class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.85rem;">
-                    Delete
-                  </button>
-                </form>
-              </div>
-            </div>
-          </article>
-        <?php endforeach; ?>
-      <?php else: ?>
-        <div class="no-reviews">
-          <p>No reviews yet. <?= empty($_SESSION['user_id']) ? 'Please log in to write reviews.' : 'Write your first review above!' ?></p>
-        </div>
-      <?php endif; ?>
-    </section>
-  </main>
 
   <script>
     // jQuery implementation (Sprint Requirement: Use jQuery)

@@ -297,6 +297,32 @@ body.bg {
   transform: scale(0.98);
 }
 
+.review-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.review-tab {
+  padding: 10px 18px;
+  background: var(--pill);
+  color: white;
+  text-decoration: none;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: background .2s, transform .2s;
+}
+
+.review-tab:hover {
+  background: #7a9aac;
+  transform: translateY(-2px);
+}
+
+.review-tab.active {
+  background: var(--pill-active);
+  color: #0a1418;
+}
+
 /* CSS RULE 12: Responsive Design for Multiple Screen Sizes */
 @media (max-width: 768px) {
   .site-header {

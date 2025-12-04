@@ -145,4 +145,22 @@ class ReviewModel {
         $stmt->execute(['id' => $reviewId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    /**
+     *  Get a user's following's reviews 
+    */
+    public function getFollowingReviews($userId) {
+        $stmt = $this->pdo->prepare("
+            SELECT r.*, u.username, s.title AS song_title, s.artist, s.album
+            FROM reviews r
+            JOIN followers f ON r.user_id = f.following_id
+            JOIN jukeboxd_users u ON r.user_id = u.id
+            JOIN songs s ON r.song_id = s.id
+            WHERE f.follower_id = :user_id
+            ORDER BY r.created_at DESC
+        ");
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }
