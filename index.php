@@ -493,6 +493,9 @@ switch ($action) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['user_id'])) {
         $title = trim($_POST['title'] ?? '');
         $artist = trim($_POST['artist'] ?? '');
+        $album = trim($_POST['album'] ?? '');
+        $genre = trim($_POST['genre'] ?? '');
+        $releaseYear = trim($_POST['release_year'] ?? '');
         $errors = [];
 
         // Basic validation
@@ -503,12 +506,31 @@ switch ($action) {
             $errors[] = "Artist must be at least 2 characters.";
         }
 
-        if (empty($errors)) {
-            // add the song
-            $added = $songModel->addSong($title, $artist);
+        // Validate release year if provided
+        if (!empty($releaseYear)) {
+            $year = intval($releaseYear);
+            if ($year < 1900 || $year > 2100) {
+                $errors[] = "Release year must be between 1900 and 2100.";
+            }
+        }
 
-            if ($added) {
-                // redirect to songs list
+        if (empty($errors)) {
+            // Prepare optional fields - use null if empty
+            $albumValue = !empty($album) ? $album : null;
+            $genreValue = !empty($genre) ? $genre : null;
+            $releaseYearValue = !empty($releaseYear) ? intval($releaseYear) : null;
+
+            // add the song
+            $addedId = $songModel->addSong($title, $artist, $albumValue, $releaseYearValue, $genreValue);
+
+            if ($addedId) {
+                // Log activity
+                $activityModel->logActivity(
+                    $_SESSION['user_id'],
+                    "added a new song: '{$title}' by {$artist}"
+                );
+
+                // redirect to songs list with success message
                 header('Location: index.php?action=songs&success=1');
                 exit;
             } else {

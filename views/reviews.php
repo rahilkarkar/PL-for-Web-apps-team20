@@ -194,7 +194,6 @@ $sortBy = $_GET['sort'] ?? 'recent';
   <a href="index.php?action=reviews&tab=following" class="review-tab <?= ($_GET['tab'] ?? 'my') === 'following' ? 'active' : '' ?>">Following</a>
 </nav>
 
-// Logic for displaying either a user's reviews or their following's reviews 
 <section class="reviews-section">
   <?php $tab = $_GET['tab'] ?? 'my'; ?>
   <div class="section-head">
@@ -210,7 +209,6 @@ $sortBy = $_GET['sort'] ?? 'recent';
     </div>
   </div>
 
-  // Choose which list of reviews to display depending on which tab the user is on - following or checking their own reviews
   <?php $list = ($tab === 'following') ? $followingReviews : $reviews; ?>
 
   <?php if (!empty($_SESSION['user_id']) && count($list) > 0): ?>

@@ -114,83 +114,98 @@ body.bg {
 .signin-modal {
   position: relative;
   z-index: 10;
-  background: var(--modal-bg);
-  border-radius: 30px;
-  padding: 60px 80px;
-  box-shadow: var(--shadow);
-  max-width: 500px;
+  background: rgba(26, 42, 51, 0.95);
+  border: 2px solid rgba(122, 184, 217, 0.3);
+  border-radius: 16px;
+  padding: 50px 60px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  max-width: 480px;
   width: 90%;
+  backdrop-filter: blur(10px);
 }
 
 /* CSS RULE 9: Form Layout */
 .signin-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 0;
 }
 
 /* CSS RULE 10: Input Fields with Focus States */
 .signin-input {
-  background: none;
-  border: none;
-  border-bottom: 2px solid var(--input-border);
-  padding: 15px 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(122, 184, 217, 0.3);
+  border-radius: 8px;
+  padding: 14px 16px;
   font-size: 16px;
-  color: var(--input-border);
+  color: #E8F0F2;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
   font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .signin-input:focus {
-  border-bottom-color: var(--accent);
+  border-color: rgba(122, 184, 217, 0.7);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(122, 184, 217, 0.1);
 }
 
 .signin-input::placeholder {
-  color: #999;
+  color: rgba(232, 240, 242, 0.5);
+  text-transform: none;
 }
 
 /* CSS RULE 11: Button with Hover Effect */
 .login-btn {
-  background-color: var(--cta);
-  color: #2c3e4a;
+  background: linear-gradient(135deg, rgba(74, 158, 255, 0.8), rgba(122, 184, 217, 0.8));
+  color: #ffffff;
   border: none;
-  padding: 15px;
-  border-radius: 30px;
-  font-size: 18px;
-  font-weight: 600;
+  padding: 16px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 8px;
+  transition: all 0.3s ease;
   font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+  width: 100%;
 }
 
 .login-btn:hover {
-  background-color: #c4c9cb;
+  background: linear-gradient(135deg, rgba(74, 158, 255, 1), rgba(122, 184, 217, 1));
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
 }
 
 .login-btn:active {
   transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(74, 158, 255, 0.3);
 }
 
 /* Signup Link Styling */
 .signup-link {
   text-align: center;
-  color: var(--input-border);
-  font-size: 14px;
-  margin-top: 10px;
+  color: rgba(232, 240, 242, 0.8);
+  font-size: 15px;
+  margin-top: 16px;
 }
 
 .signup-link a {
-  color: var(--input-border);
-  font-weight: 600;
-  text-decoration: underline;
-  transition: color 0.3s ease;
+  color: rgba(122, 184, 217, 1);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
 }
 
 .signup-link a:hover {
-  color: var(--accent);
+  color: rgba(74, 158, 255, 1);
+  border-bottom-color: rgba(74, 158, 255, 0.5);
 }
 
 /* CSS RULE 12: Responsive Design */
@@ -199,18 +214,19 @@ body.bg {
     flex-wrap: wrap;
     gap: 12px;
   }
-  
+
   .search {
     order: 3;
     width: 100%;
   }
-  
+
   .search input {
     width: 100%;
   }
-  
+
   .signin-modal {
     padding: 40px 30px;
+    max-width: 420px;
   }
 }
 
@@ -218,25 +234,28 @@ body.bg {
   .site-header {
     padding: 15px 20px;
   }
-  
+
   .logo {
     font-size: 1.2rem;
   }
-  
+
   .main-nav a {
     font-size: 0.75rem;
     margin: 0 4px;
   }
-  
+
   .signin-modal {
-    padding: 30px 20px;
+    padding: 30px 24px;
+    border-radius: 12px;
   }
-  
+
   .signin-input {
-    font-size: 14px;
+    font-size: 15px;
+    padding: 12px 14px;
   }
-  
+
   .login-btn {
-    font-size: 16px;
+    font-size: 15px;
+    padding: 14px 20px;
   }
 }

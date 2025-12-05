@@ -27,56 +27,85 @@
 
   <main class="signin-content">
     <div class="signin-modal">
-      <h2 style="text-align:center;color:#fff;">Create Your Account</h2>
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="color: #E8F0F2; margin: 0 0 8px; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px;">
+          Create Your Account
+        </h2>
+        <p style="color: rgba(232, 240, 242, 0.6); margin: 0; font-size: 0.95rem;">
+          Join JukeBoxed to discover and share music
+        </p>
+      </div>
 
       <?php if (!empty($errors)): ?>
-        <ul style="color: #ffb4b4; margin-bottom:12px;">
-          <?php foreach ($errors as $e): ?>
-            <li><?= htmlspecialchars($e) ?></li>
-          <?php endforeach; ?>
-        </ul>
+        <div style="background: rgba(255, 107, 107, 0.15); border: 2px solid rgba(255, 107, 107, 0.4); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+          <ul style="color: #ff6b6b; margin: 0; padding-left: 20px; list-style-position: outside;">
+            <?php foreach ($errors as $e): ?>
+              <li style="margin-bottom: 6px; font-weight: 500;"><?= htmlspecialchars($e) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
       <?php endif; ?>
 
       <form class="signin-form" action="index.php?action=registerUser" method="post" id="registerForm" novalidate>
-        <input
-          type="text"
-          name="username"
-          id="username"
-          placeholder="Username"
-          class="signin-input"
-          required
-          autocomplete="username">
-        <span class="error-msg" id="username-error"></span>
+        <div style="margin-bottom: 1.1rem;">
+          <label style="display: block; margin-bottom: 10px; color: #E8F0F2; font-weight: 600; font-size: 0.95rem;">
+            Username
+          </label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            placeholder="Choose a username"
+            class="signin-input"
+            required
+            autocomplete="username">
+          <span class="error-msg" id="username-error"></span>
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Email"
-          class="signin-input"
-          required
-          autocomplete="email">
-        <span class="error-msg" id="email-error"></span>
+        <div style="margin-bottom: 1.1rem;">
+          <label style="display: block; margin-bottom: 10px; color: #E8F0F2; font-weight: 600; font-size: 0.95rem;">
+            Email Address
+          </label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Enter your email"
+            class="signin-input"
+            required
+            autocomplete="email">
+          <span class="error-msg" id="email-error"></span>
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Password"
-          class="signin-input"
-          required
-          autocomplete="new-password">
-        <span class="error-msg" id="password-error"></span>
+        <div style="margin-bottom: 1.1rem;">
+          <label style="display: block; margin-bottom: 10px; color: #E8F0F2; font-weight: 600; font-size: 0.95rem;">
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Create a password"
+            class="signin-input"
+            required
+            autocomplete="new-password">
+          <span class="error-msg" id="password-error"></span>
+        </div>
 
-        <input
-          type="password"
-          name="confirm_password"
-          id="confirm_password"
-          placeholder="Confirm Password"
-          class="signin-input"
-          required
-          autocomplete="new-password">
-        <span class="error-msg" id="confirm-error"></span>
+        <div style="margin-bottom: 1.1rem;">
+          <label style="display: block; margin-bottom: 10px; color: #E8F0F2; font-weight: 600; font-size: 0.95rem;">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            name="confirm_password"
+            id="confirm_password"
+            placeholder="Confirm your password"
+            class="signin-input"
+            required
+            autocomplete="new-password">
+          <span class="error-msg" id="confirm-error"></span>
+        </div>
 
         <button type="submit" class="login-btn">CREATE ACCOUNT</button>
 
@@ -89,17 +118,19 @@
 
   <style>
     .error-msg {
-      color: #ff6b6b;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       display: block;
-      margin-top: 0.25rem;
-      margin-bottom: 0.5rem;
+      margin-top: 8px;
+      font-weight: 500;
+      min-height: 20px;
     }
     .input-error {
-      border: 2px solid #ff6b6b !important;
+      border-color: rgba(255, 107, 107, 0.8) !important;
+      background: rgba(255, 107, 107, 0.05) !important;
     }
     .input-success {
-      border: 2px solid #51cf66 !important;
+      border-color: rgba(81, 207, 102, 0.8) !important;
+      background: rgba(81, 207, 102, 0.05) !important;
     }
   </style>
 

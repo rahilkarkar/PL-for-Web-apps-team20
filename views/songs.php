@@ -123,12 +123,127 @@ if (!empty($_SESSION['user_id'])) {
       margin: 0.8rem 0;
       border-color: rgba(255,255,255,0.2);
     }
+
+    /* Add Song Form Styles */
+    .add-song-form-container {
+      background: rgba(26, 42, 51, 0.95);
+      border: 2px solid rgba(122, 184, 217, 0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+    }
+
+    .song-form-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      border: 2px solid rgba(122, 184, 217, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+      color: #E8F0F2;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .song-form-input:focus {
+      outline: none;
+      border-color: rgba(122, 184, 217, 0.7);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(122, 184, 217, 0.15);
+    }
+
+    .song-form-input::placeholder {
+      color: rgba(232, 240, 242, 0.4);
+    }
+
+    .song-form-btn {
+      flex: 1;
+      padding: 0.9rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .song-form-btn.primary {
+      background: linear-gradient(135deg, rgba(74, 158, 255, 0.8), rgba(122, 184, 217, 0.8));
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+    }
+
+    .song-form-btn.primary:hover {
+      background: linear-gradient(135deg, rgba(74, 158, 255, 1), rgba(122, 184, 217, 1));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+    }
+
+    .song-form-btn.secondary {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+      border: 2px solid rgba(255, 107, 107, 0.4);
+    }
+
+    .song-form-btn.secondary:hover {
+      background: rgba(255, 107, 107, 0.3);
+      border-color: rgba(255, 107, 107, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .song-form-btn:active {
+      transform: translateY(0);
+    }
   </style>
   <script>
     function togglePlaylistMenu(id) {
       const box = document.getElementById("playlist-box-" + id);
       box.style.display = box.style.display === "block" ? "none" : "block";
     }
+
+    // Toggle Add Song Form
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleBtn = document.getElementById('toggleAddSongBtn');
+      const addSongForm = document.getElementById('addSongForm');
+      const cancelBtn = document.getElementById('cancelAddSongBtn');
+
+      if (toggleBtn && addSongForm) {
+        toggleBtn.addEventListener('click', function() {
+          if (addSongForm.style.display === 'none' || addSongForm.style.display === '') {
+            addSongForm.style.display = 'block';
+            toggleBtn.textContent = '− Hide Form';
+            addSongForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } else {
+            addSongForm.style.display = 'none';
+            toggleBtn.textContent = '+ Add New Song';
+          }
+        });
+      }
+
+      if (cancelBtn && addSongForm) {
+        cancelBtn.addEventListener('click', function() {
+          addSongForm.style.display = 'none';
+          if (toggleBtn) {
+            toggleBtn.textContent = '+ Add New Song';
+          }
+        });
+      }
+
+      // Auto-show form if there's a success or error message
+      <?php if (isset($_GET['success']) || isset($_GET['error'])): ?>
+        if (addSongForm) {
+          addSongForm.style.display = 'block';
+          if (toggleBtn) {
+            toggleBtn.textContent = '− Hide Form';
+          }
+        }
+      <?php endif; ?>
+    });
   </script>
 </head>
 
@@ -162,9 +277,103 @@ if (!empty($_SESSION['user_id'])) {
 
   <main class="container">
     <section>
-      <h2 style="margin-bottom: 1rem;">
-        <?= !empty($searchQuery) ? 'Search Results for "' . htmlspecialchars($searchQuery) . '"' : 'All Songs' ?>
-      </h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="margin: 0;">
+          <?= !empty($searchQuery) ? 'Search Results for "' . htmlspecialchars($searchQuery) . '"' : 'All Songs' ?>
+        </h2>
+        <?php if (!empty($_SESSION['user_id'])): ?>
+          <button id="toggleAddSongBtn" class="btn-small" style="background: linear-gradient(135deg, rgba(118, 75, 162, 0.7), rgba(148, 95, 192, 0.7)); color: #fff; font-weight: 700; padding: 0.7rem 1.2rem; box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);">
+            <span style="font-size: 1.2rem; margin-right: 6px;">+</span> Add New Song
+          </button>
+        <?php endif; ?>
+      </div>
+
+      <!-- Add Song Form (Initially Hidden) -->
+      <?php if (!empty($_SESSION['user_id'])): ?>
+        <div id="addSongForm" class="add-song-form-container" style="display:none; margin-bottom: 1.5rem; max-width: 700px;">
+          <h3 style="margin-top: 0; margin-bottom: 1.5rem; color: #E8F0F2; font-size: 1.5rem; font-weight: 700;">
+            Add a New Song
+          </h3>
+
+          <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+            <div style="padding: 1rem; background: rgba(81, 207, 102, 0.15); border: 2px solid rgba(81, 207, 102, 0.5); border-radius: 8px; margin-bottom: 1.5rem; color: #51cf66; font-weight: 600;">
+              <span style="font-size: 1.2rem; margin-right: 8px;">✓</span> Song added successfully!
+            </div>
+          <?php endif; ?>
+
+          <?php if (isset($_GET['error'])): ?>
+            <div style="padding: 1rem; background: rgba(255, 107, 107, 0.15); border: 2px solid rgba(255, 107, 107, 0.5); border-radius: 8px; margin-bottom: 1.5rem; color: #ff6b6b; font-weight: 600;">
+              <span style="font-size: 1.2rem; margin-right: 8px;">✗</span>
+              <?php if ($_GET['error'] == 'validation'): ?>
+                Please ensure all required fields are filled correctly.
+              <?php else: ?>
+                An error occurred while adding the song.
+              <?php endif; ?>
+            </div>
+          <?php endif; ?>
+
+          <form action="index.php?action=addSong" method="POST" class="add-song-form">
+            <div style="margin-bottom: 1.2rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: #E8F0F2; font-size: 0.95rem; font-weight: 600;">
+                Song Title <span style="color: #ff6b6b; font-weight: 700;">*</span>
+              </label>
+              <input type="text" name="title" required
+                     placeholder="Enter song title"
+                     class="song-form-input"
+                     minlength="2" />
+            </div>
+
+            <div style="margin-bottom: 1.2rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: #E8F0F2; font-size: 0.95rem; font-weight: 600;">
+                Artist <span style="color: #ff6b6b; font-weight: 700;">*</span>
+              </label>
+              <input type="text" name="artist" required
+                     placeholder="Enter artist name"
+                     class="song-form-input"
+                     minlength="2" />
+            </div>
+
+            <div style="margin-bottom: 1.2rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: #E8F0F2; font-size: 0.95rem; font-weight: 600;">
+                Album <span style="font-size: 0.85rem; color: rgba(232, 240, 242, 0.6); font-weight: 400;">(optional)</span>
+              </label>
+              <input type="text" name="album"
+                     placeholder="Enter album name"
+                     class="song-form-input" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem;">
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; color: #E8F0F2; font-size: 0.95rem; font-weight: 600;">
+                  Genre <span style="font-size: 0.85rem; color: rgba(232, 240, 242, 0.6); font-weight: 400;">(optional)</span>
+                </label>
+                <input type="text" name="genre"
+                       placeholder="e.g., Rock, Pop, Jazz"
+                       class="song-form-input" />
+              </div>
+
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; color: #E8F0F2; font-size: 0.95rem; font-weight: 600;">
+                  Release Year <span style="font-size: 0.85rem; color: rgba(232, 240, 242, 0.6); font-weight: 400;">(optional)</span>
+                </label>
+                <input type="number" name="release_year"
+                       placeholder="e.g., 2024"
+                       min="1900" max="2100"
+                       class="song-form-input" />
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+              <button type="submit" class="song-form-btn primary">
+                <span style="font-size: 1.1rem; margin-right: 6px;">✓</span> Submit Song
+              </button>
+              <button type="button" id="cancelAddSongBtn" class="song-form-btn secondary">
+                <span style="font-size: 1.1rem; margin-right: 6px;">✕</span> Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      <?php endif; ?>
 
       <?php if (count($songsToDisplay) > 0): ?>
         <div class="songs-grid">
