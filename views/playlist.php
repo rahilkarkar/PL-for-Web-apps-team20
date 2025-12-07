@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../includes/albumcover.php'; ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -38,6 +39,8 @@
       display: flex;
       height: 70%;
       gap: 0.3rem;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .preview-song {
@@ -119,8 +122,9 @@
       <!-- user playlist -->
       <?php if (!empty($playlists)): ?>
         <?php foreach ($playlists as $pl): ?>
+          <?php $bg = getRandomGradient($pl['id']); ?>
           <a href="index.php?action=viewPlaylist&id=<?= $pl['id'] ?>" class="playlist-card">
-            <div class="playlist-preview">
+            <div class="playlist-preview" style="background: <?= $bg ?>;">
               <?php if (!empty($pl['songs'])): ?>
                 <?php foreach (array_slice($pl['songs'], 0, 4) as $song): ?>
                   <div class="preview-song"></div>

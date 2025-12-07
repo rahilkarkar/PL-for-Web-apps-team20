@@ -1,4 +1,7 @@
+<?php require_once __DIR__ . '/../includes/albumcover.php'; ?>
+
 <?php
+
 // Fetch user's reviews if logged in
 $reviews = [];
 $followingReviews = [];
@@ -214,10 +217,9 @@ $sortBy = $_GET['sort'] ?? 'recent';
   <?php if (!empty($_SESSION['user_id']) && count($list) > 0): ?>
     <?php foreach ($list as $review): ?>
       <?php $stars = str_repeat('★', $review['rating']); ?>
-
+      <?php $bg = getRandomGradient($review['id']); ?>
       <article class="review-card">
-        <div class="album-cover"></div>
-
+        <div class="album-cover" style="background: <?= $bg ?>;"></div>
         <div class="review-content">
           <div class="review-header">
             <h4 class="song-title"><?= strtoupper(htmlspecialchars($review['song_title'])) ?></h4>
