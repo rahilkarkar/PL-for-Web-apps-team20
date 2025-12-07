@@ -288,7 +288,7 @@ if (!empty($_SESSION['user_id'])) {
         <?php endif; ?>
       </div>
 
-      <!-- Add Song Form (Initially Hidden) -->
+      <!-- Add Song Form -->
       <?php if (!empty($_SESSION['user_id'])): ?>
         <div id="addSongForm" class="add-song-form-container" style="display:none; margin-bottom: 1.5rem; max-width: 700px;">
           <h3 style="margin-top: 0; margin-bottom: 1.5rem; color: #E8F0F2; font-size: 1.5rem; font-weight: 700;">

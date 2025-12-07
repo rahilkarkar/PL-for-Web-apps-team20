@@ -286,7 +286,6 @@
 
       if (!isValid) {
         e.preventDefault();
-        // Scroll to first error
         const firstError = document.querySelector('.input-error');
         if (firstError) {
           firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });

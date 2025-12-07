@@ -68,7 +68,7 @@ class UserModel {
     }
 
     /**
-     * Delete a user account (not required now but useful later).
+     * Delete a user account
      */
     public function deleteUser($id) {
         $stmt = $this->pdo->prepare("DELETE FROM jukeboxd_users WHERE id = :id");

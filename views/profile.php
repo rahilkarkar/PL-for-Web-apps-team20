@@ -80,7 +80,7 @@ $isOwnProfile = true; // For now, always viewing own profile
           <?php if ($isOwnProfile): ?>
             <a href="index.php?action=settings" class="btn dark">Edit Profile</a>
           <?php else: ?>
-            <!-- Follow/Unfollow button (for future when viewing other profiles) -->
+            <!-- Follow/Unfollow button -->
             <form action="index.php?action=followUser" method="POST" style="display: inline;">
               <input type="hidden" name="following_id" value="<?= $viewingUserId ?>" />
               <input type="hidden" name="redirect" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>" />
