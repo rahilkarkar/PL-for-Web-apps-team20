@@ -206,6 +206,9 @@ $following = $followerModel->getFollowing($_SESSION['user_id']);
               </div>
             </div>
           <?php endforeach; ?>
+          <div style="margin-top: 1rem;">
+    <a href="index.php?action=discover" style="color: #4a9eff; text-decoration: underline;">Discover more users</a>
+  </div>
         <?php endif; ?>
       <?php endif; ?>
     </section>
